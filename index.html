@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Daksh Bahl's portfolio: CS + Math at NYU. Product, software engineering and AI projects, presented as a game.">
+<meta property="og:title" content="Daksh Bahl · Portfolio Quest">
+<meta property="og:description" content="Product, software engineering and AI work by Daksh Bahl, NYU CS + Math.">
+<meta property="og:image" content="https://dakshbahl.com/title-wide.jpg">
+<link rel="icon" href="face.jpg">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}*,*::before,*::after{box-sizing:border-box}</style>
+<title>Daksh Bahl · Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800&display=swap">
+<style>
+/* Layout: one full-screen "console" with four swappable screens: title → profile → world map → level path */
+:root{
+  --sky-top:#5fb8ff; --sky-bot:#c9ecff; --grass:#46c24a; --grass-dk:#2a8f34;
+  --dirt:#c98a4b; --dirt-dk:#9c6230; --ink:#1d1b2e; --paper:#fffaf0;
+  --coin:#ffc928; --red:#e8402f; --panel:rgba(255,250,240,.96);
+  --display:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --body:"Nunito",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--sky-top);color:var(--ink);font-family:var(--body);overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(env(safe-area-inset-top,0px) + 16px) calc(env(safe-area-inset-bottom,0px) + 16px);overflow-y:auto}
+.screen[hidden]{display:none!important}
+.sky{background:linear-gradient(var(--sky-top),var(--sky-bot) 70%)}
+h1,h2,h3,.disp{font-family:var(--display);font-weight:400;letter-spacing:.02em;text-wrap:balance;margin:0}
+.outline{color:#fff;-webkit-text-stroke:0;text-shadow:
+ 3px 0 var(--ink),-3px 0 var(--ink),0 3px var(--ink),0 -3px var(--ink),3px 3px var(--ink),-3px -3px var(--ink),3px -3px var(--ink),-3px 3px var(--ink),0 7px 0 var(--ink)}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+:focus-visible{outline:4px solid var(--coin);outline-offset:3px}
+
+/* clouds + ground */
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9;height:38px;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:46px;height:46px;left:18px;top:-24px}.cloud::after{width:34px;height:34px;left:54px;top:-14px}
+@keyframes drift{from{transform:translateX(-160px)}to{transform:translateX(110vw)}}
+.ground{position:absolute;left:0;right:0;bottom:0;height:22vh;min-height:110px;
+  background:repeating-linear-gradient(170deg,var(--dirt) 0 18px,var(--dirt-dk) 18px 22px);border-top:16px solid var(--grass);pointer-events:none}
+.ground::before{content:"";position:absolute;left:0;right:0;top:-16px;height:6px;background:var(--grass-dk)}
+.hill{position:absolute;bottom:20vh;border-radius:50% 50% 0 0;background:var(--grass-dk);opacity:.55;pointer-events:none}
+
+/* TITLE */
+#title{background:#6fb3ec;padding:0;cursor:pointer;overflow:hidden;position:fixed;inset:0;justify-content:center}
+.tbox{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:max(100vw,calc(100vh * 1024 / 434));aspect-ratio:1024/434;max-width:none}
+.tbox img{width:100%;height:100%;display:block}
+.tstart{position:absolute;left:50%;top:88.2%;width:21.5%;height:9.5%;transform:translate(-50%,-50%);background:transparent;border:0;border-radius:999px;color:transparent;font-size:0;animation:pulse 1.2s ease-in-out infinite}
+.tstart:hover{box-shadow:0 0 0 4px #fff8,0 0 24px #fff8}
+@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.06)}}
+.homebar{display:flex;gap:8px}
+.rmodal{position:fixed;inset:0;z-index:60;background:rgba(20,18,40,.7);display:grid;place-items:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.rmodal[hidden]{display:none!important}
+.rmbox{width:min(860px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--paper);border:4px solid var(--ink);border-radius:20px;box-shadow:0 8px 0 var(--ink);overflow:hidden}
+.rmbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-bottom:3px solid var(--ink)}
+.rmbar h3{font-size:24px}
+.back.dl{text-decoration:none;color:var(--ink);background:var(--coin)}
+@media (max-width:520px){.rmbar{flex-wrap:wrap}}
+.rmscroll{overflow:auto;background:#e9e4da;padding:12px}
+.rmscroll img{display:block;width:100%;height:auto;background:#fff;box-shadow:0 2px 10px #0003}
+.cave{position:absolute;left:42%;width:18%;bottom:22.4%;height:auto;filter:drop-shadow(0 4px 0 rgba(0,0,0,.18))}
+.cvglow{animation:led 1.6s steps(2) infinite}
+.hero{position:absolute;bottom:22.6%;left:30%;height:14.5%;aspect-ratio:14/20;transform:translateX(-50%);z-index:2;filter:drop-shadow(0 3px 0 rgba(0,0,0,.25))}
+.hero svg{width:100%;height:100%;display:block;overflow:visible}
+.hero.idle svg{animation:idle 1.4s ease-in-out infinite}
+@keyframes idle{50%{transform:translateY(-3%)}}
+.iris{position:fixed;inset:0;z-index:50;pointer-events:none;background:#000;--r:150vmax;
+  -webkit-mask-image:radial-gradient(circle at var(--cx,50%) var(--cy,70%),transparent var(--r),#000 calc(var(--r) + 1px));mask-image:radial-gradient(circle at var(--cx,50%) var(--cy,70%),transparent var(--r),#000 calc(var(--r) + 1px));opacity:0}
+.card .back{justify-self:start}
+#title.old{gap:28px;text-align:center}
+#title .logo{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:-10vh}
+#title .logo .sm{font-size:clamp(22px,5vw,34px)}
+#title .logo .big{font-size:clamp(54px,13vw,120px);line-height:.9}
+.tag{background:var(--red);color:#fff;font-family:var(--display);padding:6px 16px;border-radius:8px;border:3px solid var(--ink);transform:rotate(-4deg);box-shadow:0 4px 0 var(--ink)}
+.press{position:relative;z-index:2;font-family:var(--display);font-size:clamp(20px,4vw,30px);color:#fff;background:none;border:0;animation:blink 1.1s steps(2) infinite}
+.press .two{display:inline-grid;place-items:center;width:1.4em;height:1.4em;border-radius:50%;background:#fff;color:var(--ink);margin:0 .2em;border:3px solid var(--ink)}
+@keyframes blink{50%{opacity:.25}}
+.copy{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:2;color:#fff;font-weight:800;font-size:13px}
+
+/* PROFILE */
+.card{position:relative;z-index:2;background:var(--panel);border:4px solid var(--ink);border-radius:22px;box-shadow:0 8px 0 var(--ink);
+  width:min(860px,100%);padding:24px;display:grid;gap:18px;margin-block:auto}
+.who{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.face{width:110px;height:110px;border-radius:50%;border:4px solid var(--ink);background:linear-gradient(135deg,var(--coin),#ff9a3c);
+  display:grid;place-items:center;font-family:var(--display);font-size:42px;color:var(--ink);flex:none;overflow:hidden}
+.face img{width:100%;height:100%;object-fit:cover}
+.who h2{font-size:38px}.who p{margin:2px 0 0;font-weight:800;color:#55506e}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:26px;font-weight:400;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#55506e}
+.bio{margin:0;line-height:1.55;max-width:62ch}
+.traits{display:grid;gap:10px}
+.th{font-size:22px}
+.tgrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px;align-items:start}
+.tphoto{margin:0;background:#fff;border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 4px 0 var(--ink);transform:rotate(-1.5deg)}
+.tphoto img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;object-position:40% 30%}
+.tphoto figcaption{padding:8px 12px;font-size:13px;font-weight:800;color:#55506e}
+.tlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tlist li{background:#fff;border:2px solid var(--ink);border-radius:12px;padding:8px 12px;display:grid;gap:2px}
+.tlist b{font-family:var(--display);font-weight:400;font-size:17px}
+.tlist span{font-size:13.5px;line-height:1.4;color:#3d3955}
+@media (max-width:620px){.tgrid{grid-template-columns:1fr}}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--ink);text-decoration:none;font-weight:800;border:3px solid var(--ink);border-radius:999px;padding:8px 14px;box-shadow:0 3px 0 var(--ink)}
+.chip:active{transform:translateY(3px);box-shadow:none}
+.drop{position:relative}
+.drop summary{list-style:none;cursor:pointer}.drop summary::-webkit-details-marker{display:none}
+.drop .menu{position:absolute;top:calc(100% + 8px);left:0;z-index:5;display:grid;min-width:240px;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);overflow:hidden}
+.drop .menu button{text-align:left;background:#fff;border:0;font:inherit;cursor:pointer;padding:12px 14px;color:var(--ink);text-decoration:none;font-weight:800}
+.drop .menu button+button{border-top:2px solid #e6e1d6}
+.drop .menu button:hover,.drop .menu button:focus-visible{background:var(--coin)}
+.go{font-family:var(--display);font-size:24px;background:var(--grass);color:#fff;border:4px solid var(--ink);border-radius:16px;padding:12px 22px;box-shadow:0 6px 0 var(--ink);justify-self:start}
+.go:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.note{font-size:12px;color:#7a7590;margin:0}
+
+/* WORLD SELECT */
+#worlds{background:
+  radial-gradient(ellipse 55% 45% at 50% 38%,#f3e3bd 0%,#e6d2a4 45%,transparent 75%),
+  linear-gradient(#cdb487 0%,#e2cd9f 40%,#d8c193 58%,#b99c6c 58.4%,#c7aa78 70%,#a98b5c 100%);
+  position:fixed;inset:0;justify-content:flex-start;gap:12px;overflow:hidden}
+#worlds::before{content:"";position:absolute;left:-60%;right:-60%;top:58%;bottom:-40%;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,transparent 0 86px,#8a6c3e55 86px 89px),repeating-linear-gradient(0deg,transparent 0 86px,#8a6c3e55 86px 89px),linear-gradient(#cdb07c,#b59765);
+  transform:perspective(520px) rotateX(64deg);transform-origin:top center;
+  -webkit-mask-image:linear-gradient(to bottom,#0008,#000 40%);mask-image:linear-gradient(to bottom,#0008,#000 40%)}
+#worlds::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 45%,transparent 55%,#5a3f1a55 100%)}
+#worlds>*{position:relative;z-index:1}
+.isle .shd{height:34px;margin:-30px auto 0;width:62%;border-radius:50%;background:radial-gradient(closest-side,#4a320f88,#4a320f00);filter:blur(2px);transition:transform .3s,opacity .3s}
+.isle.on .shd{animation:shd 2.6s ease-in-out infinite}
+@keyframes shd{50%{transform:scale(.82);opacity:.7}}
+.isle .art{filter:drop-shadow(0 18px 14px rgba(70,45,10,.32)) drop-shadow(0 2px 0 rgba(255,255,255,.25))}
+.bar{width:min(1000px,100%);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bar h2{font-size:clamp(28px,6vw,46px)}
+.wnum{display:flex;align-items:baseline;gap:10px;background:#7b4a22;color:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 18px}
+.wnum b{font-family:var(--display);font-weight:400;font-size:34px;color:#b8ff3a;font-variant-numeric:tabular-nums}
+.back{font-family:var(--display);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 16px;box-shadow:0 3px 0 var(--ink)}
+.track{width:100%;flex:1;display:flex;gap:28px;overflow-x:auto;scroll-snap-type:x mandatory;align-items:center;
+  padding-inline:calc(50% - 190px);scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.isle{flex:none;width:380px;max-width:82vw;scroll-snap-align:center;background:none;border:0;padding:0;transition:transform .3s,opacity .3s;transform:scale(.8);opacity:.85}
+.isle.on{transform:scale(1);opacity:1}
+.isle .sign{display:inline-block;font-family:var(--display);font-size:22px;background:#a8743f;color:#fff;border:3px solid var(--ink);border-radius:8px;padding:2px 12px;margin-bottom:-8px;position:relative;z-index:3;box-shadow:0 3px 0 var(--ink)}
+.isle svg{width:100%;height:auto;display:block}
+.isle .art{width:100%;display:block;pointer-events:none}.isle .art svg{width:100%;height:auto;display:block;overflow:visible}
+.isle.on .art{animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.isle .nm{font-family:var(--display);font-size:24px;margin-top:6px}
+.isle .sub{font-weight:800;font-size:14px;color:#55506e}
+.nav{display:flex;gap:14px;align-items:center;justify-content:center}
+.arrow{width:54px;height:54px;border-radius:50%;background:#fff;border:4px solid var(--ink);font-family:var(--display);font-size:24px;box-shadow:0 4px 0 var(--ink)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--ink)}.dots i.on{background:var(--coin)}
+
+/* LEVEL MAP */
+#level{justify-content:flex-start;gap:14px}
+#level .bar{width:min(100%,calc((100vh - 120px) * 1000 / 440))}
+#level .bar h2{font-size:clamp(24px,5vw,40px)}
+.map{position:relative;width:min(100%,calc((100vh - 120px) * 1000 / 440));margin-block:auto;flex:none;aspect-ratio:1000/440;border:4px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 8px 0 var(--ink)}
+.map svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ring,.flag,.lvnode .bob,.callout .bounce,.spin{transform-box:fill-box}
+.spin{animation:spin 6s linear infinite;transform-origin:center}.spin.rev{animation-direction:reverse}@keyframes spin{to{rotate:360deg}}
+.slide{animation:slide 2.4s ease-in-out infinite alternate}@keyframes slide{from{translate:-10px 0}to{translate:10px 0}}
+.slide2{animation:slide2 2.4s ease-in-out infinite alternate}@keyframes slide2{from{translate:-34px 0}to{translate:34px 0}}
+#realms{background:radial-gradient(ellipse 70% 50% at 50% 100%,#3a2a78 0%,transparent 70%),linear-gradient(#0f0a2e,#2a1d5e 60%,#3b2a78);justify-content:flex-start;gap:18px;overflow:hidden;color:#fff}
+#realms .bar{width:min(1100px,100%)}
+.rstars{position:absolute;inset:0;pointer-events:none}
+.rstars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 2.4s ease-in-out infinite}
+.realm-row{position:relative;z-index:1;width:min(1100px,100%);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-block:auto;align-items:end}
+.portal{background:none;border:0;padding:0;color:#fff;display:grid;justify-items:center;gap:10px;cursor:pointer;text-align:center}
+.portal svg{width:100%;max-width:300px;height:auto;display:block;overflow:visible;transition:transform .25s}
+.portal:hover svg,.portal:focus-visible svg{transform:translateY(-8px) scale(1.04)}
+.portal .pn{font-family:var(--display);font-size:clamp(24px,3vw,34px);text-shadow:0 3px 0 var(--ink)}
+.portal .ps{font-weight:800;color:#d9d0ff;max-width:28ch}
+.portal .pgo{font-family:var(--display);font-size:16px;background:var(--coin);color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:4px 14px;box-shadow:0 3px 0 var(--ink)}
+.swirl{animation:spin 7s linear infinite;transform-box:fill-box;transform-origin:center}
+.realmbtn{font-family:var(--display);background:var(--coin);border:3px solid var(--ink);border-radius:999px;padding:6px 16px;box-shadow:0 3px 0 var(--ink)}
+.appicon{display:grid;justify-items:center;gap:16px;text-decoration:none;color:var(--ink)}
+.appicon img{width:min(260px,70%);aspect-ratio:1;border-radius:22%;border:4px solid var(--ink);box-shadow:0 8px 0 var(--ink),0 0 60px #8a5cff99}
+.appicon span{font-family:var(--display);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 16px;box-shadow:0 3px 0 var(--ink)}
+.sites{display:grid;gap:18px}
+.site{display:block;text-decoration:none;color:var(--ink);background:#fff;border:4px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:0 6px 0 var(--ink);transition:transform .2s}
+.site:hover,.site:focus-visible{transform:translateY(-4px) rotate(-.5deg)}
+.sbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#ece8f2;border-bottom:3px solid var(--ink)}
+.sbar i{width:10px;height:10px;border-radius:50%;background:#e8402f}.sbar i:nth-child(2){background:#ffc928}.sbar i:nth-child(3){background:#46c24a}
+.sbar span{margin-left:8px;font-size:13px;font-weight:800;background:#fff;border-radius:999px;padding:2px 10px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sbody{padding:14px 16px 16px;display:grid;gap:4px}
+.sshot{display:block;width:100%;height:auto;aspect-ratio:1100/598;object-fit:cover;object-position:top}
+.snav{height:8px;border-radius:4px;width:40%;margin-bottom:8px}
+.sbody b{font-family:var(--display);font-weight:400;font-size:24px}
+.sbody small{font-weight:800;color:#55506e}
+.sblocks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.sblocks span{height:44px;border-radius:8px}
+.svisit{font-family:var(--display);background:var(--coin);border-top:3px solid var(--ink);padding:8px 14px}
+.stage-media{border:4px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 8px 0 var(--ink);background:#000}
+.stage-media img,.stage-media video{display:block;width:100%;height:auto;max-height:62vh;object-fit:contain;background:#111}
+@media (max-width:760px){.realm-row{grid-template-columns:1fr;gap:28px}.portal svg{max-width:220px}}
+.lvnode{cursor:pointer;outline:none}
+.lvnode .bob{transform-origin:center bottom;transition:transform .2s}
+.lvnode:hover .bob,.lvnode:focus-visible .bob{transform:scale(1.1)}
+.lvnode.sel .bob{animation:hop .6s ease-in-out infinite alternate}
+.lvnode .lvtag{pointer-events:none}.lvnode.sel .lvtag rect,.lvnode.sel .lvtag path:first-of-type{fill:#ffc928}.lvnode.sel .lvtag path:last-of-type{stroke:#ffc928}.lvnode.sel .lvtag text{fill:#1d1b2e}
+.lvnode.sel .disc{fill:#e8402f}.lvnode.sel text{fill:#fff}
+.lvnode:focus-visible .disc{stroke:#ffc928}
+@keyframes hop{to{transform:translateY(-10px)}}
+.led{animation:led 1.4s steps(2) infinite}@keyframes led{50%{opacity:.2}}
+.glow{animation:glow 2.4s ease-in-out infinite}@keyframes glow{50%{opacity:.55}}
+.floaty{animation:floaty 3s ease-in-out infinite}@keyframes floaty{50%{translate:0 -8px}}
+.wiggle{animation:floaty 2.6s ease-in-out infinite}@keyframes wig{25%{rotate:-6deg}75%{rotate:6deg}}
+.drift{animation:drift2 80s linear infinite}@keyframes drift2{from{translate:-220px 0}to{translate:1100px 0}}
+.fall{animation:fall 9s linear infinite}@keyframes fall{to{translate:0 470px}}
+.sway{animation-name:fallsway}@keyframes fallsway{0%{translate:0 0;rotate:0deg}50%{translate:40px 235px;rotate:180deg}100%{translate:-10px 470px;rotate:360deg}}
+.rise{animation:rise 8s linear infinite}@keyframes rise{to{translate:0 -500px;opacity:0}}
+.tw{animation:tw 2s ease-in-out infinite}@keyframes tw{50%{opacity:.15}}
+.fly{animation:fly 14s linear infinite}@keyframes fly{from{translate:-260px 0}to{translate:1200px -30px}}
+.smoke{animation:smoke 4s ease-in-out infinite}@keyframes smoke{50%{translate:6px -10px;opacity:.6}}
+.flag{animation:flag 1s ease-in-out infinite alternate;transform-origin:left center}@keyframes flag{to{scale:1 .7}}
+.draw{stroke-dasharray:400;animation:draw 3s ease-out infinite}@keyframes draw{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
+.callout{pointer-events:none}.callout .bounce{animation:hop .55s ease-in-out infinite alternate}
+.ring{animation:ring 1.6s ease-out infinite;transform-origin:center}@keyframes ring{from{scale:.6;opacity:.9}to{scale:1.5;opacity:0}}
+.lvnode.castle:hover .castle-art,.lvnode.castle:focus-visible .castle-art{filter:drop-shadow(0 0 10px #fff6a8)}
+#stage{background:linear-gradient(var(--sky0),var(--sky1) 70%);justify-content:flex-start;gap:16px}
+#stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16vh;background:var(--land);border-top:5px solid var(--ink);z-index:0}
+#stage>*{position:relative;z-index:1}
+#stage .bar{width:min(1100px,100%)}
+.stage-body{width:min(1100px,100%);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:center;margin-block:auto}
+.stage-art svg{width:100%;height:auto;display:block;overflow:visible}
+.stage-art .bob2{animation:floaty 3s ease-in-out infinite}
+.stage-card{background:var(--paper);border:4px solid var(--ink);border-radius:22px;box-shadow:0 8px 0 var(--ink);padding:26px 28px;display:grid;gap:16px;min-width:0}
+.stage-card .eyebrow{font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#7a7590}
+.stage-card h3{font-size:clamp(30px,4.5vw,46px);line-height:1}
+.stage-card .row{display:grid;grid-template-columns:120px 1fr;gap:12px 16px}
+.ovsum{margin:0;font-size:17px;line-height:1.55;max-width:62ch}
+.ovh b{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#7a7590}
+.ovh ul{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.ovh li{position:relative;padding-left:28px;line-height:1.45;font-weight:600}
+.ovh li::before{content:"";position:absolute;left:0;top:2px;width:18px;height:18px;border-radius:50%;background:var(--coin);border:2.5px solid var(--ink);box-shadow:inset -3px -3px 0 #e0a810}
+.stage-card .when{font-weight:800;color:#55506e;margin-top:-8px}
+.stage-card .row span{line-height:1.5;min-width:0}
+.stage-card .res{font-weight:800;color:#1f7a3a}
+.stage-card .pw{display:flex;flex-wrap:wrap;gap:6px}.stage-card .pw i{font-style:normal;font-weight:800;font-size:13px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:2px 10px}
+.stage-card .lk{display:flex;flex-wrap:wrap;gap:10px}
+.stage-card .row b{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#7a7590;padding-top:3px}
+.stage-nav{display:flex;align-items:center;gap:14px;font-family:var(--display);font-size:20px;color:#fff;text-shadow:0 2px 0 var(--ink)}
+.stage-nav .arrow:disabled{opacity:.4;cursor:default}
+@media (max-width:760px){.stage-body{grid-template-columns:1fr}.stage-art{max-width:300px;justify-self:center}.stage-card .row{grid-template-columns:1fr}}
+.detail{width:min(1000px,100%);background:var(--panel);border:4px solid var(--ink);border-radius:18px;padding:18px 20px;display:grid;gap:10px;box-shadow:0 6px 0 var(--ink)}
+.detail h3{font-size:26px}
+.detail .row{display:grid;grid-template-columns:110px 1fr;gap:6px 14px}
+.detail .row b{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#7a7590;padding-top:2px}
+.detail .row span{min-width:0}
+.ph{color:#9a93b5;font-style:italic}
+@media (max-width:520px){.detail .row{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.node{width:46px;height:46px;font-size:14px}.node.castle{width:52px;height:52px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+#about{background:#6fb3ec url(about-bg.jpg) center bottom/cover no-repeat fixed}
+#about .card{width:min(1100px,100%);margin-block:24px;background:rgba(255,250,240,.97)}
+#about .back{justify-self:start}
+#about .who{flex-direction:column;justify-content:center;text-align:center;gap:14px}
+#about .face{width:190px;height:190px;border-width:5px;box-shadow:0 6px 0 var(--ink)}
+#about .who h2{font-size:clamp(40px,6vw,58px)}
+#about .who p{font-size:18px}
+#about .bio{text-align:center;justify-self:center;font-size:17px}
+#about .th{text-align:center}
+#about .links{justify-content:center}
+#about .note{text-align:center}
+#about .go{justify-self:center}
+
+#about{justify-content:center}
+#about .abcard{width:min(1000px,100%);margin-block:auto;display:block;padding:clamp(12px,2.2vh,24px) clamp(18px,3vw,36px)}
+#about .abcard>.back{position:absolute;top:12px;left:14px;font-size:14px;padding:4px 12px}
+#about .ab-left{display:grid;gap:clamp(5px,1.1vh,12px);justify-items:center;text-align:center}
+#about .who{gap:6px}
+#about .face{width:clamp(64px,13vh,140px);height:clamp(64px,13vh,140px)}
+#about .who h2{font-size:clamp(28px,5vh,46px);line-height:1}
+#about .who p{font-size:clamp(13px,1.9vh,16px);margin:0}
+#about .bio{font-size:clamp(13px,1.85vh,15.5px);line-height:1.45;max-width:78ch;margin:0}
+#about .welcome{display:block;font-family:var(--display);font-weight:400;font-size:clamp(18px,2.9vh,24px);color:#e8402f;margin-bottom:2px}
+#about .traits{width:100%;gap:6px}
+#about .th{font-size:clamp(17px,2.6vh,22px);text-align:center}
+#about .tgrid{grid-template-columns:minmax(0,.8fr) minmax(0,2fr);gap:14px;align-items:stretch;text-align:left}
+#about .tphoto{display:flex;flex-direction:column;transform:rotate(-1deg)}
+#about .tphoto img{flex:none;width:100%;height:auto;min-height:0;aspect-ratio:3/2;object-fit:cover;object-position:50% 50%}
+#about .tphoto figcaption{font-size:clamp(11px,1.5vh,12.5px);padding:5px 10px}
+#about .tlist{grid-template-columns:1fr 1fr;gap:8px;align-content:stretch}
+#about .tlist li{padding:8px 12px;align-content:center;min-height:0}
+#about .tgrid{align-items:center}
+#about .tlist b{font-size:clamp(14px,2vh,17px)}
+#about .tlist span{font-size:clamp(11.5px,1.6vh,13.5px);line-height:1.35}
+#about .links{gap:8px;justify-content:center}
+#about .links .chip{font-size:clamp(12px,1.75vh,14px);padding:5px 12px}
+#about .note{margin:-6px 0 0;font-size:12px;min-height:0}#about .note:empty{display:none}
+#about .go{font-size:clamp(18px,2.8vh,24px);padding:7px 20px;justify-self:center}
+@media (max-width:700px){#about .tgrid,#about .tlist{grid-template-columns:1fr}#about .tphoto img{height:auto;aspect-ratio:3/2}}
+
+
+
+
+.stage-media.zoomable{position:relative;padding:0;cursor:zoom-in;display:block;width:100%}
+.zhint{position:absolute;right:10px;bottom:10px;background:#fff;color:var(--ink);font-weight:800;font-size:12px;border:2px solid var(--ink);border-radius:999px;padding:3px 10px}
+.cnote{margin:0;font-size:13px;font-weight:700;color:#55506e;background:#f1ece2;border:2px dashed #b8ae9c;border-radius:10px;padding:8px 12px}
+</style>
+</head>
+<body>
+
+
+<!-- TITLE -->
+<section class="screen" id="title" aria-label="Title screen">
+  <div class="tbox">
+    <img src="title-wide.jpg" alt="Super Daksh Bahl: Portfolio Quest title screen">
+    <svg class="cave" viewBox="0 0 200 100" aria-hidden="true">
+      <defs><radialGradient id="cvin" cx="50%" cy="70%" r="60%"><stop offset="0" stop-color="#000"/><stop offset=".7" stop-color="#1a1110"/><stop offset="1" stop-color="#3a2a22"/></radialGradient>
+      <linearGradient id="cvhill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ad35c"/><stop offset="1" stop-color="#3f9a3a"/></linearGradient></defs>
+      <path d="M2 100 Q8 30 100 12 Q192 30 198 100Z" fill="url(#cvhill)" stroke="#1d3a16" stroke-width="2.5"/>
+      <path d="M14 70 Q24 34 100 22 Q176 34 186 70" fill="none" stroke="#a8e88a" stroke-width="3" opacity=".6"/>
+      <path d="M62 100V60Q62 32 100 32Q138 32 138 60V100Z" fill="url(#cvin)"/>
+      <path d="M55 100V60Q55 25 100 25Q145 25 145 60V100" fill="none" stroke="#2b2420" stroke-width="16"/>
+      <path d="M55 100V60Q55 25 100 25Q145 25 145 60V100" fill="none" stroke="#a79c90" stroke-width="12"/>
+      <path d="M55 100V60Q55 25 100 25Q145 25 145 60V100" fill="none" stroke="#6f655c" stroke-width="12" stroke-dasharray="1.6 10"/>
+      <path d="M50 58Q50 21 100 20" fill="none" stroke="#d4cbc0" stroke-width="2" opacity=".7"/>
+      <rect x="92" y="18" width="16" height="13" rx="2" fill="#c9bfb3" stroke="#2b2420" stroke-width="2"/>
+      <g class="cvglow"><circle cx="86" cy="80" r="1.6" fill="#ffe27a"/><circle cx="112" cy="72" r="1.2" fill="#ffe27a"/></g>
+      <g transform="translate(26 74)"><rect x="-1.5" y="0" width="3" height="26" fill="#7a4a22" stroke="#2b1a0e" stroke-width="1"/><rect x="-17" y="-11" width="34" height="15" rx="3" fill="#c58a4b" stroke="#2b1a0e" stroke-width="2"/><text x="0" y="0" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="9" fill="#fff">ENTER ▸</text></g>
+      <path d="M150 100q3-10 6 0q3-12 6 0q3-9 6 0M36 100q3-9 6 0q3-11 6 0" fill="#3fae45" stroke="#1d3a16" stroke-width="1"/>
+    </svg>
+    <div class="hero" id="hero"><svg viewBox="0 0 14 20" shape-rendering="crispEdges" aria-hidden="true"><g id="heroPx"></g></svg></div>
+    <button class="tstart" id="pressStart">CLICK HERE TO START</button>
+  </div>
+  <div class="iris" id="iris"></div>
+</section>
+
+<!-- PROFILE -->
+<section class="screen" id="about" hidden aria-label="About me">
+  <div class="card abcard">
+    <button class="back" data-go="title">◀ Title screen</button>
+    <div class="ab-left">
+    <div class="who">
+      <div class="face" id="face"><img src="face.jpg" alt="Daksh Bahl"></div>
+      <div>
+        <h2>Daksh Bahl</h2>
+        <p>CS + Math @ NYU · Class of 2028</p>
+      </div>
+    </div>
+    <p class="bio"><b class="welcome">Welcome to my Mario-themed portfolio!</b> Every world is something I've built or worked on, and every level is a piece of that story. Pick a realm, jump into a world and clear the levels to see what I've done. I'm looking for Summer 2027 internships in product and software engineering, especially anything in AI.</p>
+    <div class="traits">
+      <h3 class="th">Player Traits</h3>
+      <div class="tgrid">
+        <figure class="tphoto"><img src="tennis.jpg" alt="Daksh serving on a tennis court"><figcaption>🎾 Tennis is my reset button.</figcaption></figure>
+        <ul class="tlist">
+          <li><b>🏈 Lifelong 49ers fan</b><span>Faithful through every season, good and bad.</span></li>
+          <li><b>⌚ Watch guy</b><span>I'll talk luxury watches with anyone who'll listen.</span></li>
+          <li><b>🗣️ Four languages</b><span>English, Hindi, Punjabi and Spanish (NJ Seal of Biliteracy).</span></li>
+          <li><b>💙 ACEing Autism</b><span>Managed a tennis program with 30+ coaches teaching 100+ kids with autism.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="links">
+      <a class="chip" href="https://www.linkedin.com/in/daksh-bahl-1a569a237/" target="_blank" rel="noopener">in · LinkedIn</a>
+      <a class="chip" href="https://github.com/dakshbahl" target="_blank" rel="noopener">&lt;/&gt; GitHub</a>
+      <details class="drop">
+        <summary class="chip">📄 Resume ▾</summary>
+        <div class="menu">
+          <button type="button" data-resume="pm">Product Management resume</button>
+          <button type="button" data-resume="swe">Software Engineering resume</button>
+        </div>
+      </details>
+      <button class="chip" id="copyEmail">✉ dakshbahl07@gmail.com</button>
+    </div>
+    <p class="note" id="copyNote" aria-live="polite"></p>
+    <button class="go" id="startPlaying">START PLAYING ▶</button>
+    </div>
+  </div>
+</section>
+
+<div class="rmodal" id="rmodal" hidden role="dialog" aria-modal="true" aria-labelledby="rmTitle">
+  <div class="rmbox">
+    <div class="rmbar"><h3 id="rmTitle">Resume</h3><div class="homebar"><a class="back dl" id="rmDl" href="#" target="_blank" rel="noopener">⬇ Download PDF</a><button class="back" id="rmClose">✕ Close</button></div></div>
+    <div class="rmscroll"><img id="rmImg" alt=""></div>
+  </div>
+</div>
+
+<!-- REALM SELECT -->
+<section class="screen" id="realms" hidden aria-label="Choose a realm">
+  <div class="rstars" id="rstars"></div>
+  <div class="bar">
+    <h2 class="outline">Choose a Realm</h2>
+    <div class="homebar"><button class="back" data-go="about">◀ Back</button><button class="back" data-go="title">⌂ Home</button></div>
+  </div>
+  <div class="realm-row" id="realmRow"></div>
+</section>
+
+<!-- WORLD SELECT -->
+<section class="screen" id="worlds" hidden aria-label="Select a world">
+  <div class="bar">
+    <h2 class="outline" id="wTitle">Select a World</h2>
+    <div class="wnum"><span class="disp">WORLD</span><b id="wnum">1</b></div>
+    <div class="homebar"><button class="realmbtn" id="realmResume">📄 Resume</button><button class="back" data-go="realms">◀ Realms</button><button class="back" data-go="title">⌂ Home</button></div>
+  </div>
+  <div class="track" id="track"></div>
+  <div class="nav">
+    <button class="arrow" id="prev" aria-label="Previous world">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow" id="next" aria-label="Next world">▶</button>
+  </div>
+</section>
+
+<!-- LEVEL MAP -->
+<section class="screen sky" id="level" hidden aria-label="World levels">
+  <div class="bar">
+    <h2 class="outline" id="lvTitle">World 1</h2>
+    <div class="homebar"><button class="back upbtn">◀ Worlds</button><button class="back" data-go="title">⌂ Home</button></div>
+  </div>
+  <div class="map" id="map"></div>
+</section>
+
+<!-- LEVEL STAGE -->
+<section class="screen" id="stage" hidden aria-label="Level details">
+  <div class="bar">
+    <h2 class="outline" id="stTitle">Level</h2>
+    <div class="homebar"><button class="back" id="stMap">◀ Map</button><button class="back upbtn">Worlds</button><button class="back" data-go="title">⌂ Home</button></div>
+  </div>
+  <div class="stage-body">
+    <div class="stage-art" id="stArt"></div>
+    <article class="stage-card" id="stCard"></article>
+  </div>
+  <div class="stage-nav"><button class="arrow" id="stPrev" aria-label="Previous level">◀</button><span id="stCount">1 / 4</span><button class="arrow" id="stNext" aria-label="Next level">▶</button></div>
+</section>
+
+<script>
+const WORLDS=[
+ {name:"AgentFlow AI",sub:"Founder · voice agents",kind:"meadow",top:"#46c24a",bg:"#bfeeb0",img:"isle1.png"},
+ {name:"Optivoy AI",sub:"Strategy & tech ops",kind:"city",top:"#e8c25a",bg:"#fbecc0",img:"isle2.png"},
+ {name:"BAC ML Team",sub:"iMasons chatbots · Grundfos heat reuse",kind:"tech",top:"#9fd6f0",bg:"#dff2fb",img:"isle3.png"},
+ {name:"Quant Lab",sub:"Polymarket insider-trading model",kind:"coins",top:"#7a5a44",bg:"#f6d2b0",img:"isle4.png"},
+ {name:"Lockd'",sub:"Voice accountability alarm",kind:"lock",top:"#6b45b8",bg:"#e3d8ff",img:"isle5.png"},
+ {name:"Bubl",sub:"AI deals newsletter",kind:"bubbles",top:"#ff8fc7",bg:"#ffd9ec"},
+ {name:"Freelance",sub:"Sites & chatbots for NJ biz",kind:"town",top:"#ff9a3c",bg:"#ffe0c2"},
+ {name:"Projects World",sub:"Builds, prototypes & side quests",kind:"lab",top:"#9aa7b0",bg:"#dde5ea"},
+ {name:"AgentFlow AI",sub:"Developer · n8n, APIs & Node.js",kind:"meadow",top:"#46c24a",bg:"#bfeeb0"},
+ {name:"Optivoy AI",sub:"Python models & data analysis",kind:"city",top:"#e8c25a",bg:"#fbecc0"},
+ {name:"Okapiq",sub:"Private equity deal sourcing",kind:"town",top:"#ff9a3c",bg:"#ffe0c2"},
+ {name:"Lockd'",sub:"From idea to App Store launch",kind:"lock",top:"#6b45b8",bg:"#e3d8ff"}
+];
+const REALMS={product:{name:"Product Realm",worlds:[0,1,10,11,5],resume:"pm"},software:{name:"Software Realm",worlds:[8,9,2,3,4],resume:"swe"},hidden:{name:"",worlds:[6]},projects:{name:"Projects World",worlds:[7]}};
+const realmOf=n=>Object.keys(REALMS).find(k=>REALMS[k].worlds.includes(n))||"product";
+const dn=n=>{const r=REALMS[realmOf(n)];return r.worlds.indexOf(n)+1};
+let curRealm="product";
+const LEVELS=["The Problem","The Build","The Results","Demo Castle"];
+const CONTENT=[
+ { when:"April 2025 – Present · Founder", link:null, levels:[
+  {name:"Identifying the Problem",short:"The Problem",mission:"Service businesses were losing customers before the first interaction: inbound calls went unanswered and client onboarding was slow.",did:"Ran workflow assessments with business owners to map where leads were being lost and what that cost them.",result:"Identified missed inbound calls and slow onboarding as the largest sources of lost revenue, which defined the initial product.",power:"Customer discovery · Workflow mapping"},
+  {name:"Building the Solution",short:"The Solution",mission:"Convert those bottlenecks into automated systems that run without staff involvement.",did:"Designed, tested and deployed AI voice receptionists, scheduling agents and review automation in n8n, connected through REST APIs and LLM integrations.",result:"Eliminated missed inbound calls for clients and contributed to roughly $36K in incremental monthly client revenue.",power:"n8n · REST APIs · LLM integrations"},
+  {name:"Marketing & Lead Generation",short:"Marketing",mission:"Build a steady pipeline of local businesses that needed the product.",did:"Identified target businesses by industry and area, built lead lists and wrote outreach scripts tailored to each business type, alongside social media presence and a referral program for warm introductions.",result:"Created a repeatable source of qualified leads across multiple industries.",power:"Lead generation · Outreach scripts · Referrals"},
+  {name:"Cold Calling & Sales Meetings",short:"Sales",mission:"Turn leads into conversations with decision-makers.",did:"Cold called business owners to open the conversation, then ran discovery calls and in-person sales meetings to walk through their workflows and show exactly where AI could recover lost revenue.",result:"Developed a sales process strong enough to hand to commission-based callers.",power:"Cold calling · Discovery calls · In-person meetings"},
+  {name:"Closing the Deal",short:"Closing",mission:"Convert interested owners into paying clients.",did:"Built proposals around each client's specific bottlenecks, handled pricing and objections, and closed contracts directly. Later bundled individual agents into one all-in-one AI package based on client feedback.",result:"Raised monthly recurring revenue per client by 265%.",power:"Proposals · Negotiation · Pricing"},
+  {name:"Delivery & Client Success",short:"Delivery",mission:"Follow through on every promise made in the sale.",did:"Onboarded each client, built and deployed their systems, then stayed involved through feedback surveys and iteration so the product kept improving after launch.",result:"Kept clients engaged and generated referrals for new business.",power:"Onboarding · Project management · Iteration"},
+  {name:"Concert Ticket Sales",short:"Ticket Sales",when:"Rutgers University · Chani Nattan concert · Ticket sales lead",img:"n8n-tickets.jpg",imgAlt:"n8n workflow automating ticket payment verification and confirmation emails",mission:"Lead ticket sales for a Rutgers University concert featuring Punjabi-Canadian artist Chani Nattan (700M+ all-time Spotify streams), where every buyer needed fast, reliable confirmation.",did:"Owned the sales process end to end and designed the buyer experience: orders were collected in one place, every payment was verified, and each buyer received a confirmation automatically. I built the system behind it as an AgentFlow automation in n8n, so the team spent its time selling instead of checking payments by hand.",result:"Ran ticket sales for a major-artist event with automated payment verification, instant buyer confirmations and a live record of every sale.",power:"Event operations · Sales · Process design · n8n"},
+  {name:"Scaling the Business",short:"Scaling",mission:"Grow AgentFlow from a side project into a revenue-generating company.",did:"Combined direct sales with a team of commission-based callers, and delivered production websites in Node.js from customer requirements through deployment.",result:"Scaled to five-figure revenue with clients across multiple U.S. states.",power:"Team building · Direct sales · Client delivery",links:[["See the websites in Projects World","#world-8-4"]]}
+ ]},
+ { when:"June 2026 – Present · Strategy & Technology Intern", link:null, levels:[
+  {name:"Competitive Landscape",mission:"Quantify Optivoy's position against competitors in award travel and loyalty optimization.",did:"Built a Python threat-scoring model across 36 companies and 19 product capabilities. It turns qualitative feature data into weighted scores, with adjustments for rarity, customer-facing impact and AI capability.",result:"Quantified competitive overlap and product whitespace, and presented the findings to the CEO and CTO.",power:"Python · Weighted scoring · Competitive analysis"},
+  {name:"Voice of the Customer",mission:"Identify the pain points travelers experience with existing award-travel tools.",did:"Ran voice-of-customer sentiment analysis on 264 Reddit comments across 33 subreddits covering 11 competitors, scoring recurring pain points and the reasons travelers adopt or abandon each tool. Presented the ranked findings and recommendations to the engineering team.",result:"Engineering shipped cross-platform flight-availability validation to stop users from seeing outdated award seats, and expanded AI and human customer support as a direct result.",power:"Sentiment analysis · User research"},
+  {name:"Bilt Partnership Strategy",mission:"Prepare Optivoy for an executive meeting with Bilt CEO Ankur Jain.",did:"Analyzed Bilt's product roadmap, investment priorities and partnership structure, then wrote the partnership brief that positioned Optivoy as embedded decision infrastructure inside Bilt's rewards ecosystem.",result:"The meeting established an ongoing advisory relationship with Ankur Jain and opened discussions on a direct partnership.",power:"Partnership strategy · Market research"},
+  {name:"Fundraising Support",mission:"Support advisor recruitment and the pre-seed raise.",did:"Turned the competitive model into visuals for the advisor-recruiting and pre-seed decks, and joined the investor data-room deep-dive covering go-to-market strategy, monetization benchmarks and pay-to-rank analysis. I also led the persona opportunity assessment, which compared three target personas to decide who the first product experience should serve, and presented brand direction to the founders and Stephen Fritz, former Head of Design at JPMorgan Chase and IBM.",result:"The decks went to former United Airlines executives, Southwest's former Chief Product Officer, Bowery Capital and Founders Collective. My brand research led the team to build v1 for upper-income travelers.",power:"Pitch decks · Persona research · Brand strategy"}
+ ]},
+ { when:"Spring 2026 – Present · Machine Learning Team", link:"https://github.com/dakshbahl/MachineLearning", levels:[
+  {name:"Applied ML Curriculum",short:"ML Curriculum",when:"ML Team · Spring 2026",mission:"Build a rigorous foundation in applied machine learning as a member of NYU Stern BAC's Machine Learning Team.",did:"Completed a structured curriculum of weekly coding labs, technical quizzes and projects on real-world datasets, covering everything from linear and logistic regression to Random Forests, RNNs, LSTMs and Transformers.",result:"Implemented and evaluated the core model families used in industry, which became the foundation for the team's client work.",power:"Python · pandas · NumPy · scikit-learn · PyTorch"},
+  {name:"Deep Learning Labs",short:"Deep Learning",when:"ML Team · Spring 2026",mission:"Understand neural networks from first principles rather than only through high-level libraries.",did:"Built a fully connected neural network from scratch in NumPy, implementing forward propagation and backpropagation by hand, and trained it on MNIST handwritten digits. Then implemented a convolutional neural network and benchmarked it against the fully connected model on the same data.",result:"Quantified how convolutional layers improve image classification over a standard feed-forward network.",power:"Python · NumPy · Backpropagation · CNNs · MNIST"},
+  {name:"Attention & Reinforcement Learning",short:"Attention & RL",when:"ML Team · Spring 2026",mission:"Learn the mechanisms behind modern language models and decision-making agents.",did:"Implemented scaled dot-product attention with softmax and causal masking, the core building block of Transformers, and used it to build sentence representations for sentiment. Separately, implemented Q-learning and SARSA agents with epsilon-greedy exploration on a GridWorld environment, then compared the two algorithms and visualized the learned value functions.",result:"Built working intuition for Transformers and reinforcement learning, the two areas behind today's AI systems.",power:"Python · NumPy · Attention · Q-learning · SARSA · Matplotlib"},
+  {name:"Knowledge-Base Chatbot",short:"CEO Chatbot",when:"ML Team · Spring 2026 · Client: Infrastructure Masons",mission:"Infrastructure Masons (iMasons) is a global professional association for the digital infrastructure industry, the people who build and run data centers. Its CEO wanted his team to get instant, accurate answers from the organization's internal knowledge instead of digging through documents and databases by hand.",did:"Worked directly with the CEO on a four-person team to build a custom NLP chatbot with full access to the company database. We used retrieval-augmented generation (RAG) so every answer is grounded in iMasons' internal data and industry reports rather than the model's general knowledge, which keeps responses accurate and specific to the organization.",result:"Delivered a working knowledge-base assistant and presented it to the CEO. His feedback, that different people at iMasons needed answers in different ways, shaped the next version.",power:"Python · RAG · LLMs · Knowledge-base search"},
+  {name:"Role-Specific Assistants",short:"Persona Bots",when:"ML Team · Spring 2026 · Client: Infrastructure Masons",mission:"One general-purpose chatbot didn't fit how each person at iMasons works. Leadership, operations and other team members ask different questions and expect answers in their own style.",did:"Rebuilt the system as a set of role-specific assistants, one for each team member. My part was designing the JSON persona files that define each assistant: its role, the context it draws on, and its voice and writing style, tailored to match how that team member actually writes. Teammates handled the data pipeline and the user experience.",result:"The CEO approved the role-specific assistants for rollout across the organization.",power:"Prompt engineering · JSON persona design · LLMs · Iteration from client feedback"},
+  {name:"Production Deployment",short:"Deployment",when:"ML Team · Spring 2026 · Client: Infrastructure Masons",mission:"Move the assistants from a demo into tools the iMasons team uses every day.",did:"Shipped the full set of persona assistants to iMasons' internal systems, along with a dedicated assistant built on iMasons' 2026 State of the Digital Infrastructure Industry report, so the team can query the report's findings directly.",result:"All of the assistants are live on iMasons' internal systems and in use by the team.",power:"Deployment · RAG · Stakeholder management"},
+  {name:"Postgraduate Team: Grundfos",short:"Grundfos",when:"ML Postgraduate Team · Fall 2026 · In progress",mission:"Grundfos, the global water and pump technology company, wants to know how waste heat from New York City data centers could be reused to heat nearby buildings.",did:"Selected for BAC's ML Postgraduate Team and placed on the Grundfos engagement, working directly with the company's CEO. The team is building an ML pipeline that forecasts when and how much heat NYC buildings need and matches them with nearby data centers' waste heat.",result:"Engagement in progress, with a final presentation to Grundfos at the end of the semester.",power:"Machine learning · Client engagement · Energy data"},
+  {name:"Heat Demand Forecasting",when:"ML Postgraduate Team · Fall 2026 · In progress",mission:"Forecast hour-by-hour heating demand for buildings near a data center, the core of the project's matching step.",did:"Working on the forecasting pod, building models from public building load profiles and NYC weather data. Each model is benchmarked against a simple baseline before moving to gradient boosting and, as a stretch goal, sequence models.",result:"Forecasts will feed the step that recommends which buildings each data center should connect to.",power:"Python · Time-series forecasting · Gradient boosting · LSTM",links:[]}
+ ]},
+ { when:"Spring 2026 · eXIT · BAC ML Team", link:"https://github.com/dakshbahl/Python-Insider-Trading-Detector", levels:[
+  {name:"Data Ingestion",mission:"Determine whether insider trading on Polymarket can be detected from transaction data alone.",did:"Wrote a scraper that pages through the Polysights insider-finder API in batches, deduplicates records and flattens the raw JSON into a single dataset. Engineered price, size, volume and timing features in pandas, including log-transformed price and size to handle heavy skew.",result:"Produced a clean, labeled dataset of more than 27,000 trades for the team to model on.",power:"Python · pandas · Polysights API"},
+  {name:"Feature Selection",mission:"Identify the signals with the strongest predictive value.",did:"Ranked features with Random Forest importance, standardized numeric inputs and label-encoded categorical ones. During this step we caught data leakage: a single timing feature (days since market start) let the model score a perfect 1.0 AUC, so we removed all time-based features to keep the model honest.",result:"A leakage-free feature set focused on genuine trading signals, so reported performance reflects real-world detection ability.",power:"scikit-learn · Random Forest"},
+  {name:"Model Architecture",mission:"Produce a single insider-trading likelihood score for every trade.",did:"Built a multimodal classifier in PyTorch. Numeric features pass through an MLP branch with GELU activations, LayerNorm and dropout; categorical features pass through learned embeddings. The two are fused by a pre-norm Transformer encoder (64-dimensional, 2 attention heads) that outputs a single likelihood score. Trained with AdamW (learning rate 3e-4) for 30 epochs, saving the best checkpoint by validation AUC, and filtered noisy negative labels with K-Means clustering and outlier removal.",result:"A model that outputs a continuous insider-trading likelihood score for every trade, rather than a simple yes/no label.",power:"PyTorch · Transformers · K-Means"},
+  {name:"Evaluation & Delivery",mission:"Validate performance and make the model usable by the team.",did:"Tuned the decision threshold on the validation set, then evaluated once on a held-out test set. Exposed the model through a Streamlit app so anyone in the club could score trades, and presented the results to the full club.",result:"95.65% test accuracy, 0.98 ROC-AUC and 0.99 average precision, catching every insider trade in the test set.",power:"Streamlit · Model evaluation",links:[["View the eXIT presentation","https://canva.link/uprf0b87shxjihf"],["View the code on GitHub","https://github.com/dakshbahl/Python-Insider-Trading-Detector"]]}
+ ]},
+ { when:"June 2025 · iOS Developer", link:"https://github.com/dakshbahl/VlarmApp", levels:[
+  {name:"Voice-to-Alarm",mission:"Reduce the friction of setting reminders by letting users speak them naturally.",did:"Built a native iOS app in Swift and SwiftUI where one microphone button starts a spoken conversation. Apple's Speech framework transcribes the request, the app parses natural phrases such as \"in 20 minutes,\" \"at 7 AM\" or \"every day at 6:30,\" and the agent confirms the alarm out loud before scheduling it with iOS notifications and saving it locally.",result:"Users create, edit, repeat and snooze alarms entirely by voice, with every alarm listed on one screen.",power:"Swift · SwiftUI · SpeechRecognition"},
+  {name:"AI Voice Reminders",mission:"Standard alarm tones are easy to ignore; a spoken, personalized reminder is not.",did:"Built a text-to-speech manager on ElevenLabs voice cloning and AVFoundation audio playback, and used the OpenAI API to turn each reminder into a personalized, motivational message. Firebase supports the backend.",result:"When an alarm fires, a natural, human-sounding voice reads the user's own reminder back to them.",power:"ElevenLabs · OpenAI API · Firebase"},
+  {name:"Challenge-Based Dismissal",mission:"Ensure users complete the task instead of snoozing the alarm.",did:"Engineered an optional proof-of-action mode that uses the camera and video validation to verify the task, including push-up challenges that must be completed before the alarm can be turned off.",result:"Positioned Lockd' as an accountability tool rather than a standard alarm.",power:"Camera APIs · Exercise verification"},
+  {name:"App Store Release",mission:"Release the app publicly.",did:"Ran beta testing through TestFlight, fixed issues found by testers and published the app to the App Store.",result:"Lockd' is live on the App Store.",power:"TestFlight · App Store",icon:"lockd-icon.jpg",links:[["Get Lockd' on the App Store","https://apps.apple.com/us/app/lockd/id6756148130"],["View the code on GitHub","https://github.com/dakshbahl/VlarmApp"]]}
+ ]},
+ { when:"August – December 2025 · Founder", link:null, levels:[
+  {name:"Customer Research",mission:"Black Friday deals are noisy, and many advertised discounts are not real.",did:"Ran pre-launch research through Instagram polls and direct messages, asking which brands, deal types and how many deals people actually wanted to receive.",result:"Used the findings to define the scope of the AI-curated deals product.",power:"User research · Instagram"},
+  {name:"Waitlist Growth",mission:"Build demand before launch.",did:"Grew the list with Instagram marketing, paid campaigns on Meta Ads and TikTok Ads, and direct outreach.",result:"200-person waitlist before launch.",power:"Instagram marketing · Meta Ads · TikTok Ads"},
+  {name:"Ad Optimization",mission:"Lower the cost of acquiring each signup.",did:"A/B tested ad creatives across Meta (Facebook Ads Manager and Instagram boosted posts) and TikTok Ads, compared cost per signup for each variant and shifted the budget to the winner.",result:"Cut cost per signup by 43%.",power:"Meta Ads · TikTok Ads · A/B testing"},
+  {name:"Black Friday Launch",mission:"Deliver the curated deals product to the full waitlist on time.",did:"Used AI to surface underpriced deals that looked too good to be true but were legit, then sent the full waitlist a curated spreadsheet of deals from 50+ clothing and electronics brands, with prices updating through Black Friday and Cyber Monday.",result:"Launched on schedule to the full 200-person waitlist.",power:"AI curation · Email marketing · Beehiiv",icon:"bubl-icon.jpg",iconLabel:"Bubl · Read the email",links:[["Read the Black Friday email","https://bublblackfriday.beehiiv.com/p/bubl-black-friday-email-list"]]}
+ ]},
+ { when:"Belle Mead & Princeton, NJ · Web, AI & Automation", link:null, levels:[
+  {name:"Finding Clients",mission:"Lots of local businesses still don't have a website.",did:"Systematically found businesses without websites across Princeton, Montgomery, Hillsborough and nearby towns, and wrote cold outreach scripts for each business type.",result:"Built a repeatable local lead pipeline.",power:"Lead generation · Cold outreach"},
+  {name:"Building Sites",mission:"Give each client a site that actually fits their brand.",did:"Designed and built sites for a professional service client and a boutique home-textiles brand, plus builds for a local salon and a coffee brand.",result:"Live at vanriperlandhome.com and aavicasa.com.",power:"Web design · HTML/CSS/JS",links:[["vanriperlandhome.com","https://vanriperlandhome.com"],["aavicasa.com","https://aavicasa.com"]]},
+  {name:"The Realtor Stack",mission:"Realtors lose leads in their Instagram DMs.",did:"Built a service stack for realtors: an Instagram DM lead-capture bot, listing content packs and voice agents as an upsell, connected through ManyChat and Meta Business Suite.",result:"Packaged it as a $300 setup plus $150/month offer.",power:"ManyChat · Meta Business Suite · Voice agents"},
+  {name:"Review Engine",mission:"Help businesses get more good reviews and catch the bad ones privately.",did:"Designed a review management flow that sends 5-star customers to Google and routes 1–3 star feedback to a private chatbot.",result:"Add the outcome here.",power:"Automation · Chatbots"}
+ ]}
+];
+CONTENT.push(
+ { when:"2023 – 2026 · Builds & prototypes", link:null, levels:[
+  {name:"TheraPrints",when:"Dec 2023 – Jul 2025 · Head of Engineering & Operations, Founding Member",img:"theraprints.jpg",imgAlt:"3D-printed red cane holders attached to a wheelchair",mission:"Seniors in local rehab centers and senior homes had nowhere to put their cane while using a wheelchair.",did:"Co-founded TheraPrints, a nonprofit, and led engineering and operations. I designed custom rehab parts from online modeling through 3D printing, including a cane attachment that clips onto a wheelchair frame.",result:"Delivered 3D-printed cane holders to local senior homes so residents could keep their cane with them.",power:"CAD modeling · 3D printing · Nonprofit operations"},
+  {name:"Physics in the Stock Market",when:"June 2025 · AP Physics C research paper",mission:"Examine how core physics concepts underpin modern quantitative finance.",did:"Wrote a 14-page research paper tracing how Einstein's model of Brownian motion and Perrin's proof of it became geometric Brownian motion, the standard model for stock prices, and how the heat equation from thermodynamics underlies the Black-Scholes option-pricing equation. As a case study, I simulated Nvidia's stock price 1,000 times with geometric Brownian motion (Monte Carlo), using its 5-year historical drift of about 0.11% per day and volatility of about 3.15% per day, and paired it with the lower-volatility S&P 500 ETF as a hedge.",result:"The simulation forecast Nvidia landing between $135 and $145 within a month from about $123, and the price finished in that range. The physics-based portfolio gained on both positions, while an intuition-based portfolio lost money on both.",power:"Stochastic calculus · Brownian motion · Black-Scholes · Monte Carlo simulation",note:"Draft currently pending review by Professor Gabe Perez-Giz.",links:[["Read the paper","https://drive.google.com/file/d/1j8DYf0XA-TyrTULiPu5yWVG3u7CXm4dW/view"]]},
+  {name:"Client Websites",when:"AgentFlow AI · Web development",sites:[["AaviCasa","https://aavicasa.com","Hand block-printed home textiles","#b5543a","#f6e7d4","site-aavicasa.jpg"],["Van Riper Land & Home","https://vanriperlandhome.com","Design-build for New Hampshire homes","#2f5d46","#e6efe8","site-vanriper.jpg"]],mission:"Small businesses needed websites that matched their brand and actually brought in customers.",did:"Designed and developed production websites through AgentFlow, owning each one from the client's requirements through launch. AaviCasa is an e-commerce store for hand block-printed bedding, linens and decor, and Van Riper Land & Home is the site for a New Hampshire outdoor design-build company.",result:"Both sites are live and in use by the businesses.",power:"Web design · JavaScript · Node.js",links:[["aavicasa.com","https://aavicasa.com"],["vanriperlandhome.com","https://vanriperlandhome.com"]]},
+  {name:"Carbon Monoxide Lifesaver",when:"Spring 2026 · NYU EG-UY 1004 · Electronics lead",video:"co-demo.mp4",poster:"co-poster.jpg",mission:"Carbon monoxide is colorless, odorless and deadly, and it can build up inside a car with nothing to warn or protect the people inside. More than 400 Americans die from it every year.",did:"On a 3-person team, I led electronics. I wired an Arduino Uno, a gas sensor, a 9V battery and a positional servo, modeled the circuit in Tinkercad and mapped the control logic in a flowchart. The Arduino compares sensor readings to a threshold (70 ppm in the CO design), and the servo presses the car's window control when levels are too high, then resets once they drop. For safe testing we used a CO2 sensor with a 120 ppm threshold, triggered by exhaling on it.",result:"Across 25+ trials the servo fired instantly above the threshold and reset as soon as levels dropped. Built for $72.20 in parts against a $94.99 unit price, with next steps to swap in a true CO sensor and integrate directly with vehicle systems.",power:"Arduino · Sensors · Servo control · Tinkercad"}
+ ]},
+ { when:"April 2025 – Present · Founder & Developer", link:null, levels:[
+  {name:"Voice Receptionists",mission:"Small service businesses were missing inbound calls whenever staff were unavailable.",did:"Built AI voice receptionists in n8n that answer every inbound call, respond with each business's real information through LLM integrations, and book appointments through scheduling agents connected by REST APIs.",result:"Eliminated missed inbound calls for clients.",power:"n8n · LLM integrations · REST APIs"},
+  {name:"5-Star Review Generator",short:"Review Generator",mission:"Local businesses depend on Google reviews, but happy customers rarely leave them and unhappy ones often post publicly before the owner can respond.",did:"Built an automated review system that follows up with every customer and asks them to rate their experience. Customers who give 5 stars are sent straight to the business's Google review page, while 1 to 3 star ratings are routed to a private chatbot that captures the feedback for the owner.",result:"Turned satisfied customers into public 5-star reviews and kept negative feedback private so owners could resolve issues directly.",power:"n8n · LLMs · Chatbots · Google Reviews"},
+  {name:"Event Ticketing Agent",when:"Rutgers University · Chani Nattan concert · Ticket sales lead",img:"n8n-tickets.jpg",imgAlt:"n8n workflow: schedule trigger, Google Sheets, AI agent with OpenAI model, if-branch to Gmail confirmations and sheet updates",mission:"Run ticket sales for a Rutgers University concert featuring Punjabi-Canadian artist Chani Nattan (700M+ all-time Spotify streams) without manually checking every payment and emailing every buyer.",did:"Built an n8n workflow that runs on a schedule, reads new orders from Google Sheets and uses an OpenAI-powered agent to verify each payment. Verified buyers automatically receive a confirmation email through Gmail; unverified orders receive a follow-up email. Each order's status is written back to the sheet.",result:"Automated payment verification and ticket confirmation end to end, giving buyers instant confirmations and the team a live record of every sale.",power:"n8n · OpenAI · Google Sheets · Gmail"},
+  {name:"Production Websites",mission:"Clients needed custom websites built to their requirements rather than templates.",did:"Created production websites in Node.js, owning each one from customer requirements through deployment and iteration.",result:"Helped scale the agency to five-figure revenue.",power:"Node.js · JavaScript · Deployment",links:[["See the websites in Projects World","#world-8-4"]]}
+ ]}
+);
+const OVERVIEWS=[
+ {summary:"AgentFlow AI is my AI automation agency for small service businesses. I find where a business is losing customers, then build AI agents that fix it.",role:"Founder · April 2025 – Present",highlights:["Scaled to five-figure revenue with clients across multiple U.S. states","Raised monthly recurring revenue per client by 265% after repackaging the offer","Contributed to about $36K in incremental monthly client revenue","Ran the entire business cycle myself: finding the problem, building the solution, marketing, cold calling, sales meetings, closing and delivery"],built:["AI voice receptionists","Scheduling agents","5-star review generator","Production websites"],power:"n8n · LLMs · Node.js · Sales",icon:"agentflow-logo.jpg",iconLabel:"AgentFlow · Visit the site",links:[["Visit agentflowai.org","https://agentflowai.org"]]},
+ {summary:"Optivoy is a stealth startup building AI-powered award travel and loyalty optimization. I work across strategy and technology directly under Stephen Fritz, former Head of Design at JPMorgan Chase and IBM, turning research into decisions the founders act on.",role:"Strategy & Technology Intern · June 2026 – Present",highlights:["Work directly under Stephen Fritz, former Head of Design at JPMorgan Chase and IBM","Built a threat-scoring model across 36 competitors and 19 capabilities, presented to the CEO and CTO","My customer research changed the engineering roadmap","My work went into pre-seed and advisor decks seen by Bowery Capital, Founders Collective and airline executives","Prepped the meeting with Bilt's CEO that led to an ongoing advisory relationship","My brand research set the v1 audience: upper-income travelers"],built:["Competitor scoring model","Voice-of-customer analysis","Bilt partnership brief","Persona opportunity assessment"],power:"Python · Research · Strategy"},
+ {summary:"I build machine learning products for outside companies through NYU Stern's Business Analytics Club. I joined the ML Team in Spring 2026 and moved up to the ML Postgraduate Team in Fall 2026, where we take on larger client engagements.",role:"ML Team (Spring 2026) · ML Postgraduate Team (Fall 2026 – Present)",highlights:["Built chatbots with the CEO of iMasons that are now live on the company's internal systems","Now working directly with Grundfos's CEO on an ML project to reuse data-center waste heat across NYC","Own hourly heat demand forecasting on the Grundfos project","Collaborated on eXIT, our 95.65%-accurate insider-trading detector"],built:["CEO knowledge-base chatbot","Role-specific persona bots","Heat demand forecasting models"],power:"Python · PyTorch · RAG · LLMs · Time-series forecasting"},
+ {summary:"eXIT is a machine learning system that flags likely insider trading on Polymarket, built by a four-person developer team, with a project manager, on the BAC ML Team. It assigns each trade a likelihood score so suspicious activity can be flagged without manual investigation.",role:"Developer · Spring 2026",highlights:["95.65% test accuracy across 27,000+ trades","Built the full pipeline from API ingestion to a working Streamlit app","Presented the results to the full club"],built:["Polysights data scraper","Feature pipeline","Multimodal Transformer classifier","Streamlit app"],power:"Python · pandas · PyTorch · Streamlit"},
+ {summary:"Lockd' is an iOS alarm app that holds you accountable. You say your reminder out loud, an AI voice reads it back when the alarm goes off, and you can't dismiss it until you prove you did the task.",role:"iOS Developer · June 2025",highlights:["Live on the App Store","Set alarms by voice with no typing","Alarms speak your reminder back in a human-sounding voice","Challenge mode makes you do the task before the alarm stops"],built:["Speech-to-alarm","AI voice reminders","Challenge-based dismissal","App Store release"],power:"Swift · SwiftUI · ElevenLabs · OpenAI API",icon:"lockd-icon.jpg",links:[["Get Lockd' on the App Store","https://apps.apple.com/us/app/lockd/id6756148130"]]},
+ {summary:"Bubl was an AI-curated Black Friday deals newsletter that surfaced deals that looked too good to be true but were legit.",role:"Founder · August – December 2025",highlights:["Grew a 200-person waitlist before launch","Cut cost per signup by 43% through A/B testing","Launched on Black Friday to the full waitlist"],built:["AI deal sourcing","Waitlist funnel","Meta and TikTok ad tests","Deals email"],power:"AI curation · Paid ads · Growth",icon:"bubl-icon.jpg",iconLabel:"Bubl · Read the email",links:[["Read the Black Friday email","https://bublblackfriday.beehiiv.com/p/bubl-black-friday-email-list"]]},
+ {summary:"I build websites, AI chatbots and automations for local businesses around Belle Mead and Princeton, NJ.",role:"Owner · Belle Mead & Princeton, NJ",highlights:["Built a repeatable local lead pipeline across Princeton, Montgomery and Hillsborough","Live client sites at aavicasa.com and vanriperlandhome.com","Packaged a realtor offer at $300 setup plus $150/month"],built:["Client websites","Instagram DM lead bot","Review management flow"],power:"Web design · ManyChat · Automation"},
+ {summary:"Hands-on work outside my main roles, from hardware and 3D printing to research and client websites.",role:"Builder · 2023 – Present",highlights:["Co-founded TheraPrints, a nonprofit making 3D-printed rehab parts for senior homes","Built an Arduino carbon monoxide safety device that worked across 25+ trials","Wrote a research paper on the physics behind stock-price models and Black-Scholes","Shipped live websites for clients"],built:["Wheelchair cane holder","Physics & finance paper","Client websites","CO Lifesaver"],power:"3D printing · Arduino · Research · Web development"},
+ {summary:"The engineering side of AgentFlow AI: end-to-end automation systems and websites for small service businesses.",role:"Founder & Developer · April 2025 – Present",highlights:["Built end-to-end automation systems with n8n, REST APIs, JSON and LLMs","Eliminated missed inbound calls for clients","Shipped production websites in Node.js","Helped scale the agency to five-figure revenue"],built:["Voice receptionists","5-star review generator","Production websites"],power:"n8n · REST APIs · LLMs · Node.js",icon:"agentflow-logo.jpg",iconLabel:"AgentFlow · Visit the site",links:[["Visit agentflowai.org","https://agentflowai.org"]]}
+];
+OVERVIEWS.forEach((o,i)=>CONTENT[i].levels.unshift(Object.assign({name:"World Overview",overview:true},o)));
+CONTENT.push({ when:"June 2026 – Present · Strategy & Technology Intern", link:null, levels:[
+  {name:"World Overview",overview:true,summary:"The technical side of my work at Optivoy, a stealth startup building AI-powered award travel and loyalty optimization. I write the Python models and analyses that drive product and fundraising decisions, working directly under Stephen Fritz, former Head of Design at JPMorgan Chase and IBM.",role:"Strategy & Technology Intern · June 2026 – Present",highlights:["Built a Python threat-scoring model across 36 companies and 19 product capabilities","Analyzed 264 Reddit comments across 33 subreddits and 11 competitors","My findings got engineering to prioritize cross-platform flight-availability validation","Model visuals went into the pre-seed and advisor-recruiting decks"],built:["Threat-scoring model","Sentiment analysis","Model visualizations"],power:"Python · Data analysis · Sentiment analysis"},
+  {name:"Threat-Scoring Model",mission:"Replace qualitative judgment with a quantitative measure of competitive overlap.",did:"Built a Python model across 36 companies and 19 product capabilities. It turns qualitative feature data into weighted numerical scores, with adjustments for how rare a capability is, whether it's customer-facing and whether it uses AI.",result:"Quantified competitive overlap and product whitespace, and presented it to the CEO and CTO.",power:"Python · Weighted scoring · Data modeling",note:"Code and data are confidential to Optivoy and can't be shared publicly. Happy to walk through the methodology in an interview."},
+  {name:"Sentiment Analysis",mission:"Quantify what frustrates award travelers about existing tools.",did:"Ran voice-of-customer sentiment analysis on 264 Reddit comments across 33 subreddits covering 11 competitors, scoring pain points and adoption drivers.",result:"Converted unstructured forum discussion into a ranked set of customer pain points.",power:"Python · Sentiment analysis · Data cleaning",note:"Code and data are confidential to Optivoy and can't be shared publicly. Happy to walk through the methodology in an interview."},
+  {name:"Driving the Roadmap",mission:"Translate research findings into product decisions.",did:"Presented findings to the engineering team, highlighting recurring failures such as outdated flight availability.",result:"Engineering prioritized cross-platform availability validation and expanded AI and human customer support.",power:"Technical communication · Prioritization"},
+  {name:"Investor Materials",mission:"Extend the model's value to fundraising.",did:"Turned the threat-scoring results into a graphical view of the competitive landscape.",result:"The visual was used in advisor-recruiting and pre-seed decks for former United Airlines executives, Southwest's former Chief Product Officer, Bowery Capital and others.",power:"Data visualization · Storytelling"}
+ ]});
+CONTENT.push({ when:"August – December 2025 · Private Equity Intern · Remote", link:null, levels:[
+  {name:"World Overview",overview:true,summary:"At Okapiq I worked on the private equity side, sourcing and qualifying small businesses for acquisition, including deal sourcing for brand partner Ace Hardware, and building the tools the deal team used to rank targets.",role:"Private Equity Intern · Remote · August – December 2025",highlights:["Sourced 150+ acquisition targets through outbound lead lists","Made 60+ cold calls and outreach touches a day to qualify business owners","Built equation-based scoring models and dashboards to rank markets and targets","Sourced acquisition targets for brand partner Ace Hardware and automated the market research behind them"],built:["Outbound lead lists","Target scoring model","Market dashboards","Automated research pipeline"],power:"Cold calling · Scoring models · Apify · Dashboards"},
+  {name:"Target Sourcing",mission:"Provide the deal team with a steady pipeline of qualified acquisition targets.",did:"Built outbound lead lists of operators in target markets and kept them organized for outreach.",result:"Sourced 150+ acquisition targets.",power:"Lead generation · Market research"},
+  {name:"Operator Outreach",mission:"Qualify targets with real financial and operational data.",did:"Ran 60+ cold calls and outreach touches every day to qualify operators and gather their financial and operational data.",result:"Converted cold leads into qualified targets supported by financial and operational data.",power:"Cold calling · Qualification"},
+  {name:"Scoring Models",mission:"Prioritize the markets and businesses most worth the team's time.",did:"Created equation-based scoring models and dashboards that evaluate markets and rank acquisition targets.",result:"Gave the deal team a ranked view of where to focus.",power:"Scoring models · Dashboards"},
+  {name:"Research Automation",mission:"Okapiq was sourcing acquisition targets for brand partner Ace Hardware, and screening each market required extensive manual research.",did:"Automated market research by scraping Google Maps and Yelp through Apify, then turning the results into structured profiles of service businesses (location, category, ratings and reviews) that the deal team could screen quickly.",result:"Accelerated deal screening for the Ace Hardware partnership.",power:"Apify · Google Maps · Yelp · Automation"}
+ ]});
+CONTENT.push({ when:"June 2025 · Founder & Product Owner", link:null, levels:[
+  {name:"World Overview",overview:true,icon:"lockd-icon.jpg",summary:"Lockd' is an accountability alarm app I took from idea to the App Store. On the product side I owned the problem, the scope of the first version and the iteration before launch.",role:"Founder & Product Owner · June 2025",highlights:["Found the problem: reminders and alarms are too easy to ignore","Scoped a tight first version around one loop: say it, hear it, prove it","Iterated through TestFlight testing before launch","Marketed it through Instagram, Meta Ads and TikTok Ads","Launched on the App Store with about 200 people on the waitlist"],built:["Problem framing","MVP scope","TestFlight iteration","App Store launch"],power:"Product scoping · User testing · Paid social · Launch",links:[["Get Lockd' on the App Store","https://apps.apple.com/us/app/lockd/id6756148130"]]},
+  {name:"Problem Definition",mission:"Reminders and alarms fail because they are easy to dismiss and nothing verifies follow-through.",did:"Studied how people use alarms and reminders day to day and found a consistent gap: alerts are easy to dismiss, and nothing verifies follow-through.",result:"Defined the product around accountability rather than reminders alone.",power:"Problem discovery · User empathy"},
+  {name:"MVP Scoping",mission:"Define the minimum feature set for a differentiated first release.",did:"Narrowed the concept to one core loop: set a reminder by voice, hear it delivered in a natural voice, and verify completion before the alarm stops.",result:"A focused first version that could ship quickly while remaining clearly differentiated.",power:"Prioritization · Feature scoping"},
+  {name:"Pre-Launch Iteration",mission:"Validate the experience with real users before public release.",did:"Put builds in testers' hands through TestFlight, collected feedback on the voice reminders and challenges, and iterated on the experience before submitting to the App Store.",result:"A launch-ready build shaped by tester feedback.",power:"TestFlight · User feedback · Iteration"},
+  {name:"Go-to-Market",mission:"Build demand for Lockd' ahead of launch.",did:"Ran Instagram marketing alongside paid campaigns on Meta Ads and TikTok Ads to drive signups to the waitlist.",result:"Built a waitlist of about 200 people ahead of launch.",power:"Instagram marketing · Meta Ads · TikTok Ads"},
+  {name:"Launch",icon:"lockd-icon.jpg",mission:"Release Lockd' publicly on the App Store.",did:"Prepared the listing and shipped Lockd' to the App Store, with a waitlist built before launch.",result:"Live on the App Store with about 200 people on the waitlist.",power:"App Store launch · Waitlist",links:[["Get Lockd' on the App Store","https://apps.apple.com/us/app/lockd/id6756148130"]]}
+ ]});
+const lvl=(n,i)=>CONTENT[n].levels[i];
+// level map: themed illustrated scenes
+const VB_W=1000,VB_H=440;
+let NODES=[[130,345],[370,215],[630,330],[865,215]];
+let PATH_D="M130 345 C 230 350, 260 215, 370 215 S 520 335, 630 330 S 770 215, 865 215";
+const NLEN=n=>CONTENT[n].levels.length;
+function layout(c){if(c===4)return [[[130,345],[370,215],[630,330],[865,215]],"M130 345 C 230 350, 260 215, 370 215 S 520 335, 630 330 S 770 215, 865 215"];
+  const xs=Array.from({length:c},(_,i)=>Math.round(105+i*(770/(c-1)))),P=xs.map((x,i)=>[x,i===c-1?225:(i%2?215:340)]);
+  const dx=Math.round(770/(c-1)*.45);let d=`M${P[0][0]} ${P[0][1]} C ${P[0][0]+dx} ${P[0][1]+5}, ${P[1][0]-dx} ${P[1][1]}, ${P[1][0]} ${P[1][1]}`;
+  for(let i=2;i<c;i++)d+=` S ${P[i][0]-dx} ${P[i][1]}, ${P[i][0]} ${P[i][1]}`;return [P,d]}
+const K="#1d1b2e";
+let _s=1;const rnd=()=>(_s=(_s*16807)%2147483647)/2147483647;const R=(a,b)=>a+rnd()*(b-a);
+
+const THEMES={
+ meadow:{sky:["#7cc8ff","#d9f3ff"],far:"#a6dc9a",mid:"#6fcb63",land:"#58b94f",land2:"#4aa843",path:"#f0d29a",pathEdge:"#b88a4e",roof:"#e8402f",
+   decor:["tree","tree","tree","bush","bush","flower","flower","flower","flower","rock"],extras:["pond","sign:voice"],sky_items:["cloud","cloud","cloud","sun"],particles:"petal"},
+ city:{sky:["#ffb85c","#fff1cc"],far:"#f3cf7a",mid:"#ecbd5e",land:"#f2cf78",land2:"#e2b553",path:"#fff3d1",pathEdge:"#b8863a",roof:"#2f5fd0",
+   decor:["palm","palm","server","server","rock","cactus","dune"],extras:["pyramid","pyramid","plane"],sky_items:["sunbig","cloud"],particles:"heat"},
+ tech:{sky:["#8fc9ee","#eef9ff"],far:"#d7ecf8",mid:"#bfe0f2",land:"#f4fbff",land2:"#d8eef9",path:"#a9d4ec",pathEdge:"#5a98c0",roof:"#3a7bd5",
+   decor:["pine","pine","pine","ice","ice","monitor","chat","chat"],extras:["mountain","mountain","igloo"],sky_items:["cloud","cloud"],particles:"snow"},
+ coins:{sky:["#3b1d2e","#ff8b45"],far:"#5a2e2a",mid:"#4a2622",land:"#5b3a2e",land2:"#4a2e25",path:"#ffb347",pathEdge:"#a8441c",roof:"#3b2b2a",
+   decor:["rockdark","rockdark","coins","coins","coins","lavapool"],extras:["volcano","chart"],sky_items:["moonred"],particles:"ember"},
+ lock:{sky:["#170f3a","#5a3ea8"],far:"#3c2a78",mid:"#4b3592",land:"#5b40a8",land2:"#4a3392",path:"#c9b6ff",pathEdge:"#7b5bd6",roof:"#ffc928",
+   decor:["crystal","crystal","crystal","clock","clock","mush","pcloud"],extras:["biglock"],sky_items:["moon","stars"],particles:"star"},
+ bubbles:{sky:["#ff9ed2","#ffe6f3"],far:"#ffc1df",mid:"#ffacd4",land:"#ffd1e8",land2:"#ffbddd",path:"#ffffff",pathEdge:"#e66fae",roof:"#ff4f9a",
+   decor:["gift","gift","tag","tag","bush","flower","flower"],extras:["cart"],sky_items:["cloud","cloud"],particles:"bubble"},
+ lab:{sky:["#4b6fa8","#d6e9f7"],far:"#a9bccb",mid:"#8ea4b5",land:"#b8c4cc",land2:"#9aa8b2",path:"#ffd23f",pathEdge:"#2b2b2b",roof:"#e8812f",
+   decor:["gear","gear","crate","crate","bulb","printer","rock"],extras:["printerbig","gearbig","sign:build"],sky_items:["cloud","cloud","sun"],particles:"spark"},
+ town:{sky:["#ff9a5c","#ffe2b8"],far:"#f2b27a",mid:"#d98e57",land:"#9bd16b",land2:"#86bf57",path:"#e9d3a8",pathEdge:"#a07440",roof:"#c2410c",
+   decor:["house","house","house","tree","tree","bush","lamp"],extras:["shop","sign:open"],sky_items:["sun","cloud"],particles:"leaf"}
+};
+
+const D={
+ tree:(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="22" ry="6" fill="#0003"/><rect x="-5" y="-30" width="10" height="32" rx="3" fill="#8a5a2b" stroke="${K}" stroke-width="3"/><circle cx="0" cy="-48" r="26" fill="#3fa63c" stroke="${K}" stroke-width="3"/><circle cx="-14" cy="-38" r="16" fill="#3fa63c" stroke="${K}" stroke-width="3"/><circle cx="14" cy="-38" r="16" fill="#3fa63c" stroke="${K}" stroke-width="3"/><circle cx="-8" cy="-56" r="8" fill="#7fd96d"/><circle cx="8" cy="-36" r="3" fill="#e8402f"/><circle cx="-12" cy="-30" r="3" fill="#e8402f"/></g>`,
+ bush:(x,y,s,t)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="26" ry="5" fill="#0002"/><path d="M-26 0a13 13 0 0 1 10-18a14 14 0 0 1 26-4a13 13 0 0 1 16 22z" fill="${t.land2}" stroke="${K}" stroke-width="3"/><circle cx="-6" cy="-14" r="4" fill="#fff6"/></g>`,
+ flower:(x,y,s)=>{const c=["#ff6b9a","#ffd23f","#ffffff","#b388ff","#ff8a3d"][Math.floor(rnd()*5)];return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0v-14" stroke="#2a8f34" stroke-width="3"/>${[0,72,144,216,288].map(a=>`<circle cx="${Math.cos(a*Math.PI/180)*5}" cy="${-16+Math.sin(a*Math.PI/180)*5}" r="4.5" fill="${c}" stroke="${K}" stroke-width="1.5"/>`).join("")}<circle cx="0" cy="-16" r="3.5" fill="#ffcf2e"/></g>`},
+ rock:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-18 0l4-14 12-6 14 4 6 16z" fill="#a9a9b8" stroke="${K}" stroke-width="3"/><path d="M-10-12l8-4" stroke="#fff8" stroke-width="3"/></g>`,
+ rockdark:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-22 0l6-22 14-10 16 8 10 24z" fill="#2c1c1a" stroke="${K}" stroke-width="3"/><path d="M-8-22l6 10 8-4" fill="none" stroke="#ff7a2a" stroke-width="2.5"/></g>`,
+ palm:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="6" cy="2" rx="24" ry="5" fill="#0002"/><path d="M0 0c4-30 2-56 10-84" fill="none" stroke="${K}" stroke-width="12" stroke-linecap="round"/><path d="M0 0c4-30 2-56 10-84" fill="none" stroke="#a46b35" stroke-width="7" stroke-linecap="round" stroke-dasharray="6 3"/>${[-150,-110,-60,-20,20].map(a=>`<path d="M10-84q${Math.cos(a*Math.PI/180)*22} ${Math.sin(a*Math.PI/180)*22-14} ${Math.cos(a*Math.PI/180)*44} ${Math.sin(a*Math.PI/180)*30+10}" fill="none" stroke="${K}" stroke-width="11" stroke-linecap="round"/><path d="M10-84q${Math.cos(a*Math.PI/180)*22} ${Math.sin(a*Math.PI/180)*22-14} ${Math.cos(a*Math.PI/180)*44} ${Math.sin(a*Math.PI/180)*30+10}" fill="none" stroke="#3fae45" stroke-width="6" stroke-linecap="round"/>`).join("")}<circle cx="6" cy="-80" r="5" fill="#7a4a22"/><circle cx="14" cy="-79" r="5" fill="#7a4a22"/></g>`,
+ cactus:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-6 0v-44a6 6 0 0 1 12 0V0zM6-22h8v-12a4 4 0 0 1 8 0v16a4 4 0 0 1-4 4H6zM-6-16h-8v-10a4 4 0 0 0-8 0v14a4 4 0 0 0 4 4h12z" fill="#4caf50" stroke="${K}" stroke-width="3"/></g>`,
+ dune:(x,y,s,t)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M-60 0q60-40 120 0z" fill="${t.land2}" opacity=".8"/>`,
+ server:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="26" ry="5" fill="#0003"/><rect x="-20" y="-70" width="40" height="70" rx="4" fill="#3e64c9" stroke="${K}" stroke-width="3"/><path d="M-20-70l8-8h40l-8 8zM20-70l8-8v70l-8 8z" fill="#2a4aa0" stroke="${K}" stroke-width="3"/>${[0,1,2,3].map(i=>`<rect x="-14" y="${-62+i*16}" width="28" height="10" rx="2" fill="#24408f"/><circle class="led" style="animation-delay:${(rnd()*2).toFixed(2)}s" cx="9" cy="${-57+i*16}" r="2.6" fill="#5fffb0"/>`).join("")}</g>`,
+ pine:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="20" ry="5" fill="#0002"/><rect x="-4" y="-12" width="8" height="14" fill="#7a4a22"/>${[0,1,2].map(i=>`<path d="M${-26+i*5} ${-10-i*22}L0 ${-46-i*22}L${26-i*5} ${-10-i*22}z" fill="#2f7d4a" stroke="${K}" stroke-width="3"/><path d="M${-14+i*3} ${-28-i*22}L0 ${-46-i*22}L${14-i*3} ${-28-i*22}q-7 5-14 0q-7 5-14 0z" fill="#fff"/>`).join("")}</g>`,
+ ice:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M-16 0v-24l8-6h24v24l-8 6z" fill="#bfeaff" stroke="${K}" stroke-width="3"/><path d="M-16-24h24v24M8-24l8-6" fill="none" stroke="${K}" stroke-width="3"/><path d="M-11-18l8-0" stroke="#fff" stroke-width="3"/></g>`,
+ monitor:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#0002"/><rect x="-6" y="-14" width="12" height="14" fill="#555"/><rect x="-28" y="-50" width="56" height="38" rx="5" fill="#2b3a55" stroke="${K}" stroke-width="3"/><path d="M-20-40h18M-20-32h30M-20-24h12" stroke="#5fffb0" stroke-width="3"/><rect x="2" y="-42" width="4" height="8" fill="#5fffb0" class="led"/></g>`,
+ chat:(x,y,s)=>`<g class="floaty" style="animation-delay:${(rnd()*3).toFixed(2)}s" transform="translate(${x} ${y-50}) scale(${s})"><path d="M-24-18h48a6 6 0 0 1 6 6v20a6 6 0 0 1-6 6h-30l-12 10v-10h-6a6 6 0 0 1-6-6v-20a6 6 0 0 1 6-6z" fill="#fff" stroke="${K}" stroke-width="3"/><circle cx="-10" cy="-2" r="3.5" fill="${K}"/><circle cx="0" cy="-2" r="3.5" fill="${K}"/><circle cx="10" cy="-2" r="3.5" fill="${K}"/></g>`,
+ coins:(x,y,s)=>{const n=2+Math.floor(rnd()*4);return `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="22" ry="5" fill="#0004"/>${Array.from({length:n},(_,i)=>`<ellipse cx="0" cy="${-i*8}" rx="18" ry="7" fill="#e0a810" stroke="${K}" stroke-width="2.5"/><ellipse cx="0" cy="${-i*8-3}" rx="18" ry="7" fill="#ffd23f" stroke="${K}" stroke-width="2.5"/>`).join("")}<text x="0" y="${-(n-1)*8+1}" text-anchor="middle" font-family="Lilita One" font-size="10" fill="#a8740a">$</text></g>`},
+ lavapool:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="34" ry="10" fill="#2c1c1a" stroke="${K}" stroke-width="3"/><ellipse class="glow" cx="0" cy="0" rx="26" ry="6" fill="#ff6a1a"/><ellipse cx="-6" cy="-2" rx="8" ry="2" fill="#ffd23f"/></g>`,
+ crystal:(x,y,s)=>{const c=["#7ef0ff","#ff8af0","#b9a2ff"][Math.floor(rnd()*3)];return `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="20" ry="5" fill="#0004"/><path d="M-6 0l-6-30 8-16 8 16-4 30z" fill="${c}" stroke="${K}" stroke-width="3"/><path d="M6 0l6-20 8-6 4 12-6 14z" fill="${c}" stroke="${K}" stroke-width="3"/><path d="M-4-40l2 22" stroke="#fff9" stroke-width="3"/></g>`},
+ clock:(x,y,s)=>`<g class="wiggle" style="animation-delay:${(rnd()*2).toFixed(2)}s" transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="18" ry="4" fill="#0004"/><path d="M-12 0l-4 6M12 0l4 6" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="-14" cy="-36" r="8" fill="#ffc928" stroke="${K}" stroke-width="3"/><circle cx="14" cy="-36" r="8" fill="#ffc928" stroke="${K}" stroke-width="3"/><circle cx="0" cy="-20" r="20" fill="#e8402f" stroke="${K}" stroke-width="3"/><circle cx="0" cy="-20" r="14" fill="#fff"/><path d="M0-20v-9M0-20l6 4" stroke="${K}" stroke-width="3" stroke-linecap="round"/></g>`,
+ mush:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-5" y="-16" width="10" height="16" rx="4" fill="#efe3ff" stroke="${K}" stroke-width="3"/><path d="M-18-14a18 16 0 0 1 36 0z" fill="#ff8af0" stroke="${K}" stroke-width="3"/><circle cx="-6" cy="-22" r="3" fill="#fff"/><circle cx="7" cy="-19" r="2.5" fill="#fff"/></g>`,
+ pcloud:(x,y,s)=>`<g transform="translate(${x} ${y-10}) scale(${s})" opacity=".85"><path d="M-30 0a12 12 0 0 1 8-18a16 16 0 0 1 28-6a12 12 0 0 1 22 10a10 10 0 0 1 2 14z" fill="#8f7ad6" stroke="${K}" stroke-width="3"/></g>`,
+ gift:(x,y,s)=>{const c=["#ff4f9a","#3fb8ff","#ffc928","#8a5cff"][Math.floor(rnd()*4)];return `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#0002"/><rect x="-18" y="-30" width="36" height="30" fill="${c}" stroke="${K}" stroke-width="3"/><rect x="-21" y="-38" width="42" height="10" fill="${c}" stroke="${K}" stroke-width="3"/><path d="M0-38v38" stroke="#fff" stroke-width="6"/><path d="M0-38c-10-14-20-4-10 0M0-38c10-14 20-4 10 0" fill="none" stroke="#fff" stroke-width="4"/></g>`},
+ tag:(x,y,s)=>`<g class="wiggle" style="animation-delay:${(rnd()*2).toFixed(2)}s" transform="translate(${x} ${y}) scale(${s})"><path d="M-18-30h26l12 12-12 12h-26z" fill="#fff36b" stroke="${K}" stroke-width="3"/><circle cx="12" cy="-18" r="3" fill="${K}"/><text x="-6" y="-12" text-anchor="middle" font-family="Lilita One" font-size="13" fill="#e8402f">-43%</text></g>`,
+ house:(x,y,s,t)=>{const c=["#ffd27a","#ffb38a","#c7e3ff","#fff1c9"][Math.floor(rnd()*4)];return `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="30" ry="5" fill="#0002"/><rect x="-24" y="-34" width="48" height="34" fill="${c}" stroke="${K}" stroke-width="3"/><path d="M-30-32L0-58L30-32z" fill="${t.roof}" stroke="${K}" stroke-width="3"/><rect x="-6" y="-18" width="12" height="18" fill="#8a5a2b" stroke="${K}" stroke-width="2.5"/><rect x="-19" y="-26" width="9" height="9" fill="#fff4b0" stroke="${K}" stroke-width="2"/><rect x="10" y="-26" width="9" height="9" fill="#fff4b0" stroke="${K}" stroke-width="2"/><rect x="12" y="-56" width="7" height="14" fill="#9a5b3b" stroke="${K}" stroke-width="2"/></g>`},
+ gear:(x,y,s)=>`<g transform="translate(${x} ${y-22*s}) scale(${s})"><g class="spin" style="animation-duration:${(4+rnd()*4).toFixed(1)}s"><circle r="18" fill="none" stroke="${K}" stroke-width="12" stroke-dasharray="6 5"/><circle r="18" fill="none" stroke="#c9d1d8" stroke-width="7" stroke-dasharray="6 5"/><circle r="14" fill="#c9d1d8" stroke="${K}" stroke-width="3"/><circle r="5" fill="${K}"/></g></g>`,
+ crate:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="24" ry="5" fill="#0002"/><rect x="-20" y="-36" width="40" height="36" fill="#c98a4b" stroke="${K}" stroke-width="3"/><path d="M-20-24h40M-20-12h40M-20-36l40 36" stroke="#8a5a2b" stroke-width="3"/></g>`,
+ bulb:(x,y,s)=>`<g class="floaty" transform="translate(${x} ${y-40}) scale(${s})"><circle r="22" fill="#fff6a8" opacity=".4" class="glow"/><path d="M-12 4a14 14 0 1 1 24 0c-4 4-5 7-5 10h-14c0-3-1-6-5-10z" fill="#ffe14d" stroke="${K}" stroke-width="3"/><rect x="-7" y="14" width="14" height="8" rx="2" fill="#9aa8b2" stroke="${K}" stroke-width="2.5"/></g>`,
+ printer:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="28" ry="5" fill="#0002"/><rect x="-24" y="-56" width="48" height="56" fill="none" stroke="${K}" stroke-width="5"/><rect x="-24" y="-56" width="48" height="56" fill="#ffffff22" stroke="#e8812f" stroke-width="2.5"/><rect x="-24" y="-8" width="48" height="8" fill="#555" stroke="${K}" stroke-width="2.5"/><g class="slide"><rect x="-8" y="-40" width="16" height="10" fill="#e8812f" stroke="${K}" stroke-width="2.5"/><path d="M0-30v6" stroke="${K}" stroke-width="3"/></g><path d="M-8-8v-8h6v-6h6" fill="none" stroke="#e8402f" stroke-width="5" stroke-linecap="round"/></g>`,
+ lamp:(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2" y="-50" width="4" height="50" fill="${K}"/><circle class="glow" cx="0" cy="-54" r="7" fill="#ffe27a" stroke="${K}" stroke-width="2.5"/></g>`
+};
+const EX={
+ pond:(t)=>`<g transform="translate(500 420)"><ellipse cx="0" cy="0" rx="90" ry="22" fill="#3fa9f5" stroke="${K}" stroke-width="4"/><ellipse cx="-20" cy="-5" rx="40" ry="6" fill="#9fdcff"/><ellipse cx="40" cy="4" rx="12" ry="5" fill="#3fa63c" stroke="${K}" stroke-width="2"/></g>`,
+ "sign:voice":(t)=>`<g transform="translate(250 400)"><rect x="-3" y="-40" width="6" height="40" fill="#8a5a2b" stroke="${K}" stroke-width="2"/><rect x="-36" y="-66" width="72" height="30" rx="5" fill="#c58a4b" stroke="${K}" stroke-width="3"/><path d="M-24-51h4M-16-58v14M-8-55v8M0-61v20M8-55v8M16-58v14M24-51h-4" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></g>`,
+ pyramid:(t,i)=>{const x=i?760:205,y=i?150:165,s=i?1.1:.8;return `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-80 0L0-90L80 0z" fill="#f2c25e" stroke="${K}" stroke-width="4"/><path d="M0-90L80 0H20z" fill="#d9a441"/>${[1,2,3,4].map(k=>`<path d="M${-80+k*16} ${-k*18}H${80-k*16}" stroke="#b8862f" stroke-width="2.5"/>`).join("")}</g>`},
+ plane:()=>`<g class="fly"><g transform="translate(0 60)"><path d="M0 0h70l18-8h8l-6 12 6 10h-8l-18-6H0z" fill="#fff" stroke="${K}" stroke-width="3"/><path d="M30 2l-10 22h12l18-20z" fill="#3e64c9" stroke="${K}" stroke-width="3"/><path d="M14 4h6M26 4h6M38 4h6M50 4h6" stroke="#3e64c9" stroke-width="3"/><path d="M-10 6h-60" stroke="#fff" stroke-width="4" stroke-dasharray="10 8" opacity=".8"/></g></g>`,
+ mountain:(t,i)=>{const x=i?820:180,s=i?1.3:1;return `<g transform="translate(${x} 175) scale(${s})"><path d="M-110 0L-20-120L20-80L50-110L120 0z" fill="#c6dff0" stroke="${K}" stroke-width="4"/><path d="M-20-120L-48-82l14 6 14-12 12 10 24-14zM50-110l-18 22 10 4 10-8 12 8 6-8z" fill="#fff" stroke="${K}" stroke-width="3"/></g>`},
+ igloo:()=>`<g transform="translate(490 430)"><path d="M-60 0a60 52 0 0 1 120 0z" fill="#fff" stroke="${K}" stroke-width="4"/><path d="M-56-20h112M-44-38h88M-30 0v-20M0 0v-20M30 0v-20M-14-20v-18M16-20v-18" stroke="#bfe0f2" stroke-width="3"/><path d="M-16 0a16 18 0 0 1 32 0z" fill="#2b3a55" stroke="${K}" stroke-width="3"/></g>`,
+ volcano:()=>`<g transform="translate(500 170)"><path d="M-200 0L-50-130h100L200 0z" fill="#3a2420" stroke="${K}" stroke-width="5"/><path d="M-50-130h100l-10 14h-80z" fill="#ff6a1a"/><path class="glow" d="M-20-130c-6 40 20 60 -10 130h30c30-70 -6-90 10-130z" fill="#ff6a1a" opacity=".9"/><path d="M-6-128c-2 30 10 60 2 128" stroke="#ffd23f" stroke-width="4" fill="none"/><g class="smoke"><circle cx="0" cy="-160" r="22" fill="#6b4a4a" opacity=".7"/><circle cx="24" cy="-186" r="16" fill="#6b4a4a" opacity=".55"/><circle cx="-14" cy="-206" r="12" fill="#6b4a4a" opacity=".45"/></g></g>`,
+ chart:()=>`<g transform="translate(760 120)"><path d="M-80 40L-40 10L0 24L40-20L80-50" fill="none" stroke="#1d1b2e" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path class="draw" d="M-80 40L-40 10L0 24L40-20L80-50" fill="none" stroke="#5fffb0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M66-56l16-4-4 16" fill="none" stroke="#5fffb0" stroke-width="6" stroke-linecap="round"/><text x="-80" y="70" font-family="Lilita One" font-size="22" fill="#ffd23f">95.65%</text></g>`,
+ biglock:()=>`<g class="floaty" transform="translate(520 120)"><circle r="60" fill="#ffc92833" class="glow"/><path d="M-26-10v-22a26 26 0 0 1 52 0v22" fill="none" stroke="${K}" stroke-width="16"/><path d="M-26-10v-22a26 26 0 0 1 52 0v22" fill="none" stroke="#c9c9d6" stroke-width="9"/><rect x="-40" y="-14" width="80" height="58" rx="10" fill="#ffc928" stroke="${K}" stroke-width="4"/><circle cx="0" cy="10" r="8" fill="${K}"/><rect x="-3" y="12" width="6" height="16" fill="${K}"/></g>`,
+ cart:()=>`<g transform="translate(500 430)"><path d="M-60-60h18l14 46h64l12-34h-82" fill="#fff" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><circle cx="-20" cy="0" r="9" fill="${K}"/><circle cx="30" cy="0" r="9" fill="${K}"/><rect x="-22" y="-62" width="20" height="18" fill="#ff4f9a" stroke="${K}" stroke-width="3"/><rect x="2" y="-56" width="22" height="14" fill="#3fb8ff" stroke="${K}" stroke-width="3"/></g>`,
+ shop:(t)=>`<g transform="translate(500 175)"><rect x="-70" y="-70" width="140" height="70" fill="#fff3d6" stroke="${K}" stroke-width="4"/><path d="M-80-70h160l-8-26h-144z" fill="${t.roof}" stroke="${K}" stroke-width="4"/>${[0,1,2,3,4,5,6,7].map(i=>`<path d="M${-80+i*20}-70a10 10 0 0 0 20 0" fill="${i%2?'#fff':'#e8402f'}" stroke="${K}" stroke-width="3"/>`).join("")}<rect x="-56" y="-48" width="50" height="32" fill="#bfe6ff" stroke="${K}" stroke-width="3"/><rect x="14" y="-50" width="36" height="50" fill="#8a5a2b" stroke="${K}" stroke-width="3"/><text x="0" y="-104" text-anchor="middle" font-family="Lilita One" font-size="20" fill="#fff" stroke="${K}" stroke-width="4" paint-order="stroke">MAIN STREET DEALS</text></g>`,
+ printerbig:()=>`<g transform="translate(500 175)"><ellipse cx="0" cy="4" rx="90" ry="12" fill="#0003"/><rect x="-70" y="-150" width="140" height="150" fill="#ffffff33" stroke="${K}" stroke-width="7"/><rect x="-70" y="-150" width="140" height="150" fill="none" stroke="#e8812f" stroke-width="3"/><rect x="-70" y="-150" width="140" height="18" fill="#3a3f4a" stroke="${K}" stroke-width="4"/><rect x="-76" y="-20" width="152" height="20" fill="#3a3f4a" stroke="${K}" stroke-width="4"/><g class="slide2"><rect x="-22" y="-112" width="44" height="26" rx="4" fill="#e8812f" stroke="${K}" stroke-width="4"/><path d="M0-86v14" stroke="${K}" stroke-width="5"/><circle class="led" cx="12" cy="-100" r="4" fill="#5fffb0"/></g><path d="M-30-20v-26q0-14 14-14h20q14 0 14 14" fill="none" stroke="#e8402f" stroke-width="12" stroke-linecap="round"/><path d="M-30-20v-26q0-14 14-14h20q14 0 14 14" fill="none" stroke="#ff8a7a" stroke-width="4" stroke-linecap="round"/></g>`,
+ gearbig:()=>`<g transform="translate(830 130)"><g class="spin" style="animation-duration:9s"><circle r="46" fill="none" stroke="${K}" stroke-width="22" stroke-dasharray="14 10"/><circle r="46" fill="none" stroke="#c9d1d8" stroke-width="15" stroke-dasharray="14 10"/><circle r="38" fill="#c9d1d8" stroke="${K}" stroke-width="4"/><circle r="12" fill="${K}"/></g><g transform="translate(-58 40)"><g class="spin rev" style="animation-duration:6s"><circle r="22" fill="none" stroke="${K}" stroke-width="12" stroke-dasharray="7 6"/><circle r="22" fill="none" stroke="#e8812f" stroke-width="7" stroke-dasharray="7 6"/><circle r="17" fill="#e8812f" stroke="${K}" stroke-width="3"/><circle r="6" fill="${K}"/></g></g></g>`,
+ "sign:build":()=>`<g transform="translate(250 410)"><rect x="-3" y="-40" width="6" height="40" fill="#8a5a2b"/><rect x="-38" y="-66" width="76" height="30" rx="4" fill="#ffd23f" stroke="${K}" stroke-width="3"/><path d="M-38-60l10-6M-24-36l20-30M8-36l20-30M30-36l8-6" stroke="${K}" stroke-width="3" opacity=".35"/><text x="0" y="-45" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="15" fill="${K}">MAKER ZONE</text></g>`,
+ "sign:open":()=>`<g transform="translate(260 410)"><rect x="-3" y="-40" width="6" height="40" fill="#8a5a2b"/><rect x="-34" y="-64" width="68" height="28" rx="6" fill="#5fd35f" stroke="${K}" stroke-width="3"/><text x="0" y="-43" text-anchor="middle" font-family="Lilita One" font-size="15" fill="#fff">FOR SALE</text></g>`
+};
+const SKY={
+ cloud:(i)=>`<g class="drift" style="animation-duration:${60+i*25}s;animation-delay:-${i*18}s"><g transform="translate(0 ${30+i*28}) scale(${.8+i*.25})"><path d="M0 30a18 18 0 0 1 14-26a24 24 0 0 1 42-6a18 18 0 0 1 32 14a14 14 0 0 1 2 18z" fill="#fff" opacity=".95"/></g></g>`,
+ sun:()=>`<g transform="translate(900 58)"><circle r="44" fill="#fff2a8" opacity=".5" class="glow"/><circle r="30" fill="#ffe14d" stroke="#f5b400" stroke-width="4"/></g>`,
+ sunbig:()=>`<g transform="translate(520 120)"><circle r="120" fill="#fff0b0" opacity=".45" class="glow"/><circle r="72" fill="#ffd54d"/></g>`,
+ moon:()=>`<g transform="translate(880 64)"><circle r="40" fill="#fff6d6" opacity=".25" class="glow"/><circle r="28" fill="#fff6d6"/><circle cx="12" cy="-6" r="24" fill="#2a1d5e"/></g>`,
+ moonred:()=>`<g transform="translate(150 70)"><circle r="34" fill="#ffcf9a" opacity=".9"/><circle cx="-8" cy="-6" r="6" fill="#f0b07a"/><circle cx="10" cy="8" r="4" fill="#f0b07a"/></g>`,
+ stars:()=>Array.from({length:40},()=>`<circle class="tw" style="animation-delay:${(rnd()*3).toFixed(2)}s" cx="${R(0,1000).toFixed(0)}" cy="${R(0,170).toFixed(0)}" r="${R(1,2.6).toFixed(1)}" fill="#fff"/>`).join("")
+};
+const PART={
+ snow:()=>Array.from({length:45},()=>`<circle class="fall" style="animation-duration:${R(6,12).toFixed(1)}s;animation-delay:-${R(0,12).toFixed(1)}s" cx="${R(0,1000).toFixed(0)}" cy="-10" r="${R(2,4.5).toFixed(1)}" fill="#fff"/>`).join(""),
+ ember:()=>Array.from({length:30},()=>`<circle class="rise" style="animation-duration:${R(4,9).toFixed(1)}s;animation-delay:-${R(0,9).toFixed(1)}s" cx="${R(300,700).toFixed(0)}" cy="460" r="${R(2,4).toFixed(1)}" fill="${rnd()>.5?'#ffd23f':'#ff6a1a'}"/>`).join(""),
+ star:()=>Array.from({length:14},()=>`<path class="tw" style="animation-delay:${(rnd()*3).toFixed(2)}s" transform="translate(${R(0,1000).toFixed(0)} ${R(180,420).toFixed(0)})" d="M0-7L2-2L7 0L2 2L0 7L-2 2L-7 0L-2-2z" fill="#fff6a8"/>`).join(""),
+ bubble:()=>Array.from({length:22},()=>`<circle class="rise" style="animation-duration:${R(7,14).toFixed(1)}s;animation-delay:-${R(0,14).toFixed(1)}s" cx="${R(0,1000).toFixed(0)}" cy="470" r="${R(6,16).toFixed(1)}" fill="#ffffff55" stroke="#fff" stroke-width="2"/>`).join(""),
+ petal:()=>Array.from({length:14},()=>`<ellipse class="fall sway" style="animation-duration:${R(9,16).toFixed(1)}s;animation-delay:-${R(0,16).toFixed(1)}s" cx="${R(0,1000).toFixed(0)}" cy="-10" rx="4" ry="2.5" fill="#ffb6d0"/>`).join(""),
+ leaf:()=>Array.from({length:12},()=>`<ellipse class="fall sway" style="animation-duration:${R(9,16).toFixed(1)}s;animation-delay:-${R(0,16).toFixed(1)}s" cx="${R(0,1000).toFixed(0)}" cy="-10" rx="5" ry="3" fill="#e8812f"/>`).join(""),
+ heat:()=>"",
+ spark:()=>Array.from({length:24},()=>`<circle class="rise" style="animation-duration:${R(3,7).toFixed(1)}s;animation-delay:-${R(0,7).toFixed(1)}s" cx="${R(0,1000).toFixed(0)}" cy="460" r="${R(1.5,3).toFixed(1)}" fill="${rnd()>.5?'#ffd23f':'#ffffff'}"/>`).join("")
+};
+
+function castle(t){
+  const st="#b9b6c9",sd="#8e8aa6",rf=t.roof;
+  const tower=(x,w,h)=>`<rect x="${x}" y="${-h}" width="${w}" height="${h}" fill="${st}" stroke="${K}" stroke-width="3"/>${Array.from({length:Math.floor(h/14)},(_,r)=>`<path d="M${x} ${-h+14+r*14}h${w}" stroke="${sd}" stroke-width="1.5"/>`).join("")}<path d="M${x-4} ${-h}L${x+w/2} ${-h-38}L${x+w+4} ${-h}z" fill="${rf}" stroke="${K}" stroke-width="3"/><rect x="${x+w/2-4}" y="${-h+16}" width="8" height="12" rx="4" fill="${K}"/>`;
+  return `<g class="castle-art">
+   <ellipse cx="0" cy="4" rx="78" ry="10" fill="#0004"/>
+   ${tower(-70,26,86)}${tower(44,26,86)}
+   <rect x="-46" y="-62" width="92" height="62" fill="${st}" stroke="${K}" stroke-width="3"/>
+   ${[-46,-28,-10,8,26].map(x=>`<rect x="${x}" y="-72" width="12" height="12" fill="${st}" stroke="${K}" stroke-width="3"/>`).join("")}
+   ${[0,1,2,3].map(r=>`<path d="M-46 ${-48+r*14}h92" stroke="${sd}" stroke-width="1.5"/>`).join("")}
+   <rect x="-16" y="-128" width="32" height="70" fill="${st}" stroke="${K}" stroke-width="3"/>
+   <path d="M-22-128L0-176L22-128z" fill="${rf}" stroke="${K}" stroke-width="3"/>
+   <path d="M0-176v-24" stroke="${K}" stroke-width="3"/><path class="flag" d="M0-200l26 7-26 7z" fill="#e8402f" stroke="${K}" stroke-width="2"/>
+   <circle cx="0" cy="-102" r="9" fill="#ffd23f" stroke="${K}" stroke-width="3"/>
+   <path d="M-18 0v-24a18 18 0 0 1 36 0v24z" fill="#3b2a1e" stroke="${K}" stroke-width="3"/>
+   <path d="M-12-30v30M-4-38v38M4-38v38M12-30v30M-18-14h36M-18-24h36" stroke="#6b5a4a" stroke-width="2.5"/>
+   <rect x="-36" y="-44" width="9" height="13" rx="4" fill="${K}"/><rect x="27" y="-44" width="9" height="13" rx="4" fill="${K}"/>
+  </g>`;
+}
+
+
+const BASE={lab:["#7f8c96","#5f6b74"],meadow:["#a86b3a","#7f4f28"],city:["#c9964f","#a2733a"],tech:["#8aa6bd","#6b879f"],coins:["#3a2420","#25150f"],lock:["#3b2a78","#2a1d5e"],bubbles:["#d98ab3","#b86d95"],town:["#a86b3a","#7f4f28"]};
+const HERO={lab:[["printerbig",150,128,.62]],meadow:[["pond",165,140,.5]],city:[["pyramid",120,124,1.05]],tech:[["mountain",140,122,.9],["igloo",222,150,.45]],
+ coins:[["volcano",150,128,"0.55 1"],["chart",232,58,.62]],lock:[["biglock",150,78,1.05]],bubbles:[["cart",150,152,.75]],town:[["shop",150,124,.85]]};
+const BACK={lab:[["gear",75,126,1.3],["crate",230,132,1.1],["bulb",255,112,1],["gear",110,146,.8],["crate",200,150,.8]],meadow:[["tree",95,118,1.15],["tree",215,112,1.3],["tree",255,128,.95],["flower",120,140,1.2]],city:[["server",200,120,1.15],["server",238,128,.95],["palm",262,132,1],["palm",70,132,.9]],
+ tech:[["pine",70,132,1.05],["pine",250,126,1.2],["pine",100,140,.8],["monitor",190,144,.9]],coins:[["coins",70,138,1.1],["coins",242,140,1],["rockdark",100,150,1]],
+ lock:[["crystal",70,132,1.2],["crystal",235,128,1.35],["clock",100,150,.9],["clock",210,152,.8]],bubbles:[["gift",85,126,1.3],["gift",222,124,1.15],["tag",250,145,1],["gift",115,150,.9]],
+ town:[["house",65,138,1],["house",245,134,1.05],["tree",270,148,.8],["lamp",100,152,1]]};
+const ORIG={printerbig:[500,175],pond:[500,420],"sign:voice":[250,400],pyramid:[205,165],mountain:[180,175],igloo:[490,430],volcano:[500,170],chart:[760,120],biglock:[520,120],cart:[500,430],shop:[500,175],"sign:open":[260,410]};
+function island(w,i){
+  const t=THEMES[w.kind],b=BASE[w.kind];_s=500+i*77;
+  const hero=(HERO[w.kind]||[]).filter(h=>EX[h[0]]).map(([k,x,y,sc])=>{const [ox,oy]=ORIG[k];return `<g transform="translate(${x} ${y}) scale(${sc}) translate(${-ox} ${-oy})">${EX[k](t,0)}</g>`}).join("");
+  const items=[];let tries=0;
+  (BACK[w.kind]||[]).forEach(([k,x,y,sc])=>items.push({x,y,s:sc,k}));
+  while(items.length<14&&tries<500){tries++;const x=R(48,252),y=R(100,148);
+    if(((x-150)/112)**2+((y-124)/30)**2>1)continue;
+    if(items.some(o=>Math.hypot(o.x-x,o.y-y)<24))continue;
+    if((HERO[w.kind]||[]).some(h=>Math.hypot(h[1]-x,(h[2]+12)-y)<56))continue;
+    items.push({x,y,s:R(.5,.68),k:t.decor[Math.floor(rnd()*t.decor.length)]})}
+  items.sort((a,c)=>a.y-c.y);
+  const deco=items.map(o=>D[o.k](o.x.toFixed(0),o.y.toFixed(0),o.s.toFixed(2),t)).join("");
+  const extraBase=w.kind==="tech"?`<path d="M60 150l6 22 6-18 8 26 8-24 6 14" fill="#fff" stroke="${K}" stroke-width="3"/><path d="M200 156l6 20 6-14 8 22 8-26" fill="#fff" stroke="${K}" stroke-width="3"/>`
+   :w.kind==="coins"?`<path class="glow" d="M110 150l14 30-8 20 14 22M190 150l-10 26 12 18" fill="none" stroke="#ff6a1a" stroke-width="5" stroke-linecap="round"/>`
+   :w.kind==="lock"?`<circle class="tw" cx="96" cy="190" r="4" fill="#c9b6ff"/><circle class="tw" style="animation-delay:.7s" cx="200" cy="200" r="3" fill="#c9b6ff"/>`:"";
+  const parts=`<g transform="translate(0 -70) scale(.3 .62)" pointer-events="none">${PART[t.particles]()}</g>`;
+  return `<svg viewBox="0 -70 300 340" aria-hidden="true">
+   
+   <path d="M28 124 Q40 236 150 246 Q260 236 272 124 Z" fill="${b[0]}" stroke="${K}" stroke-width="4"/>
+   <path d="M44 160 Q150 200 256 160" fill="none" stroke="${b[1]}" stroke-width="5"/><path d="M70 196 Q150 226 230 196" fill="none" stroke="${b[1]}" stroke-width="5"/>
+   ${extraBase}
+   <ellipse cx="150" cy="124" rx="124" ry="36" fill="${t.land}" stroke="${K}" stroke-width="4"/>
+   <path d="M30 128 q10 14 22 4 q10 14 22 2 q12 14 24 2 q12 14 26 2 q12 14 26 2 q12 14 24 0 q12 14 24 2 q12 12 22 0 q10 12 22 -4" fill="none" stroke="${t.land2}" stroke-width="5" stroke-linecap="round"/>
+   <ellipse cx="150" cy="118" rx="108" ry="24" fill="#ffffff22"/>
+   ${hero}${deco}
+   <g transform="translate(46 -6) rotate(-4)"><rect x="-5" y="34" width="10" height="120" rx="2" fill="#8a5a2b" stroke="${K}" stroke-width="3.5"/><path d="M-2 40v110" stroke="#a8743f" stroke-width="2"/><path d="M-44 6h88l4 4v34l-4 4h-88l-4-4V10z" fill="#c98a4b" stroke="${K}" stroke-width="4" stroke-linejoin="round"/><path d="M-38 18h30M6 18h28M-34 36h22M2 36h34" stroke="#a46b35" stroke-width="2.5" stroke-linecap="round"/><circle cx="-36" cy="12" r="2.6" fill="#5a3a1c"/><circle cx="36" cy="12" r="2.6" fill="#5a3a1c"/><text x="0" y="38" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="30" fill="#fff" stroke="${K}" stroke-width="6" paint-order="stroke">${realmOf(i)==="projects"?"★":"W"+dn(i)}</text></g>
+   ${parts}
+  </svg>`;
+}
+
+const $=s=>document.querySelector(s);
+const screens=["title","about","realms","worlds","level","stage"];
+let cur=0, lvlSel=0;
+
+function show(id){screens.forEach(s=>$("#"+s).hidden=s!==id.split("-")[0]&&!(id.startsWith("world-")&&s==="level"))}
+function route(){
+  const h=(location.hash||"#title").slice(1);
+  const m=h.match(/^world-(\d+)(?:-(\d+))?$/);
+  if(m&&WORLDS[+m[1]-1]){const n=+m[1]-1;if(m[2]&&+m[2]>=1&&+m[2]<=NLEN(n))openStage(n,+m[2]-1);else openWorld(n);return}
+  const rm=h.match(/^realm-(product|software|projects)$/);
+  if(rm){if(rm[1]==="projects"){go("world-"+(REALMS.projects.worlds[0]+1));return}
+    if(curRealm!==rm[1]||!isles.length){curRealm=rm[1];renderTrack();cur=0}
+    screens.forEach(s=>$("#"+s).hidden=s!=="worlds");requestAnimationFrame(()=>focusWorld(cur,false));return}
+  let id=["title","about","realms"].includes(h)?h:(h==="worlds"?"realms":"title");
+  screens.forEach(s=>$("#"+s).hidden=s!==id);
+  if(id==="title"&&!walking)resetHero();
+}
+function go(h){if(location.hash==="#"+h)route();else location.hash=h}
+addEventListener("hashchange",route);
+
+// title
+// hero walk-in
+const HERO_ROWS=["....HHHHH.....","...HHHHHHHH...","..HHHHHHHHHH..","..HHHSSSSHHH..","..HHSSSSSSH...","..HSSESSESS...","...SSSSSSSS...","...SSSMMSSS...","....SSSSSS....","...BBBBBBBB...","..BBBBWWBBBB..",".BBBBBWWBBBBB.",".BBbBBBBBBbBB.",".BB.BBBBBB.BB.",".SS.BBBBBB.SS.","....bbbbbb....","....PPPPPP...."];
+const LEGS=[["....PP..PP....","...PP....PP...","..FFF....FFF.."],["....PPPPP.....",".....PPPP.....","....FFFFFF...."]];
+const PAL={H:"#4a2f1c",S:"#f0c09a",E:"#1d1b2e",M:"#b5654a",B:"#2f6fd6",b:"#2152a8",W:"#ffffff",P:"#353a52",F:"#6b3f22"};
+function drawHero(f){$("#heroPx").innerHTML=HERO_ROWS.concat(LEGS[f]).map((r,y)=>[...r].map((c,x)=>PAL[c]?`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PAL[c]}"/>`:"").join("")).join("")}
+let walking=false;
+function resetHero(){walking=false;const h=$("#hero");h.style.transition="none";h.style.left="30%";h.style.opacity="1";h.style.transform="translateX(-50%)";h.style.filter="";h.classList.add("idle");drawHero(1);const ir=$("#iris");ir.style.opacity="0";ir.style.setProperty("--r","150vmax")}
+function startGame(){
+  if(walking)return;walking=true;const h=$("#hero");h.classList.remove("idle");
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){go("about");return}
+  let f=0;const legs=setInterval(()=>drawHero(f^=1),140);
+  h.style.transition="left 1.7s linear";requestAnimationFrame(()=>h.style.left="51%");
+  setTimeout(()=>{clearInterval(legs);drawHero(1);
+    h.style.transition="transform .7s ease-in, opacity .7s ease-in, filter .7s ease-in";
+    h.style.transform="translateX(-50%) translateY(-12%) scale(.7)";h.style.filter="brightness(.15)";h.style.opacity="0";
+    const r=$("#cave")||document.querySelector(".cave").getBoundingClientRect();
+    const ir=$("#iris");ir.style.setProperty("--cx",(r.left+r.width/2)+"px");ir.style.setProperty("--cy",(r.top+r.height*.7)+"px");ir.style.opacity="1";
+    const t0=performance.now(),R0=Math.hypot(innerWidth,innerHeight);
+    setTimeout(()=>{(function step(t){const k=Math.min(1,(t-t0-300)/700);ir.style.setProperty("--r",Math.max(0,R0*(1-Math.max(0,k)))+"px");if(k<1)requestAnimationFrame(step);else{go("about");setTimeout(()=>{ir.style.transition="opacity .5s";ir.style.opacity="0";setTimeout(()=>{ir.style.transition="";resetHero()},550)},120)}})(performance.now())},0);
+  },1750);
+}
+drawHero(1);resetHero();
+$("#pressStart").onclick=e=>{e.stopPropagation();startGame()};
+addEventListener("keydown",e=>{
+  const onTitle=!$("#title").hidden, onWorlds=!$("#worlds").hidden, onLevel=!$("#level").hidden;
+  if(onTitle&&(e.key==="2"||e.key==="Enter"||e.key===" ")){e.preventDefault();startGame()}
+  else if(onWorlds){if(e.key==="ArrowRight")focusWorld(cur+1);if(e.key==="ArrowLeft")focusWorld(cur-1);if(e.key==="Enter"&&document.activeElement.tagName!=="BUTTON")go("world-"+(REALMS[curRealm].worlds[cur]+1))}
+  else if(onLevel){if(e.key==="ArrowRight")selectNode(Math.min(NLEN(curW)-1,lvlSel+1));if(e.key==="ArrowLeft")selectNode(Math.max(0,lvlSel-1));if(e.key==="Enter"&&!document.activeElement.closest(".lvnode,button"))openLevel(lvlSel);if(e.key==="Escape")go("worlds")}
+  else if(!$("#stage").hidden){if(e.key==="ArrowRight"&&stL<NLEN(curW)-1)openLevel(stL+1);if(e.key==="ArrowLeft"&&stL>0)openLevel(stL-1);if(e.key==="Escape")go("world-"+(curW+1))}
+});
+$("#title").addEventListener("click",e=>{if(e.target.id!=="pressStart")startGame()});
+
+// profile
+$("#startPlaying").onclick=()=>go("realms");
+function openResume(kind){const pm=kind==="pm";$("#rmDl").hidden=false;
+  $("#rmTitle").textContent=pm?"Product Management resume":"Software Engineering resume";
+  $("#rmImg").src=pm?"resume-pm.jpg":"resume-swe.jpg";$("#rmImg").alt=$("#rmTitle").textContent;
+  $("#rmDl").href=pm?"https://drive.google.com/file/d/1rr6yj0-q5OuMB-1Kh5OZof64REidWVWw/view":"https://drive.google.com/file/d/1CsTdYZI7JUNeQBcx6OioyAIsV_MHgZVc/view";
+  $("#rmodal").hidden=false;$("#rmClose").focus()}
+document.querySelectorAll("[data-resume]").forEach(b=>b.onclick=()=>{const pm=b.dataset.resume==="pm";
+  $("#rmTitle").textContent=pm?"Product Management resume":"Software Engineering resume";
+  $("#rmImg").src=pm?"resume-pm.jpg":"resume-swe.jpg";$("#rmDl").href=pm?"https://drive.google.com/file/d/1rr6yj0-q5OuMB-1Kh5OZof64REidWVWw/view":"https://drive.google.com/file/d/1CsTdYZI7JUNeQBcx6OioyAIsV_MHgZVc/view";$("#rmImg").alt=$("#rmTitle").textContent;
+  $("#rmodal").hidden=false;b.closest("details").open=false;$("#rmClose").focus()});
+const closeRm=()=>{$("#rmodal").hidden=true};
+$("#rmClose").onclick=closeRm;$("#rmodal").onclick=e=>{if(e.target.id==="rmodal")closeRm()};
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#rmodal").hidden)closeRm()});
+$("#copyEmail").onclick=()=>{const t="dakshbahl07@gmail.com";
+  navigator.clipboard?.writeText(t).then(()=>$("#copyNote").textContent="Email copied.").catch(()=>$("#copyNote").textContent=t)};
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+
+// worlds
+const track=$("#track");let isles=[];
+function renderTrack(){const R0=REALMS[curRealm];
+  $("#wTitle").textContent=R0.name;
+  $("#realmResume").textContent=R0.resume==="swe"?"📄 SWE Resume":"📄 PM Resume";
+  track.innerHTML=R0.worlds.map((g,i)=>{const w=WORLDS[g];return `<button class="isle" data-i="${i}" aria-label="World ${i+1}: ${w.name}"><div class="art">${island(w,g)}</div><div class="shd"></div><div class="nm">${w.name}</div><div class="sub">${w.sub}</div></button>`}).join("");
+  $("#dots").innerHTML=R0.worlds.map(()=>"<i></i>").join("");
+  isles=[...track.children];
+  isles.forEach((el,i)=>el.onclick=()=>{if(i===cur)go("world-"+(R0.worlds[i]+1));else focusWorld(i)});
+  mark(0)}
+function mark(i){cur=i;isles.forEach((el,j)=>el.classList.toggle("on",j===i));[...$("#dots").children].forEach((d,j)=>d.classList.toggle("on",j===i));$("#wnum").textContent=i+1}
+function focusWorld(i,smooth=true){i=Math.max(0,Math.min(isles.length-1,i));const el=isles[i];if(!el)return;
+  track.scrollTo({left:el.offsetLeft-(track.clientWidth-el.offsetWidth)/2,behavior:smooth?"smooth":"auto"});mark(i)}
+$("#prev").onclick=()=>focusWorld(cur-1);$("#next").onclick=()=>focusWorld(cur+1);
+let st;track.addEventListener("scroll",()=>{clearTimeout(st);st=setTimeout(()=>{
+  const mid=track.scrollLeft+track.clientWidth/2;let best=0,bd=1e9;
+  isles.forEach((el,i)=>{const d=Math.abs(el.offsetLeft+el.offsetWidth/2-mid);if(d<bd){bd=d;best=i}});mark(best)},80)});
+track.addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();track.scrollLeft+=e.deltaY}},{passive:false});
+renderTrack();
+$("#realmResume").onclick=()=>openResume(REALMS[curRealm].resume==="swe"?"swe":"pm");
+document.querySelectorAll(".upbtn").forEach(b=>b.onclick=()=>{const r=realmOf(curW);go(r==="projects"?"realms":"realm-"+r)});
+// realm portals
+if($("#rstars"))$("#rstars").innerHTML=Array.from({length:70},()=>`<i style="left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*75).toFixed(1)}%;animation-delay:${(Math.random()*3).toFixed(2)}s;opacity:${(.4+Math.random()*.6).toFixed(2)}"></i>`).join("");
+const PORTALS=[
+ {k:"product",name:"Product Realm",sub:"Strategy, growth and the businesses I've built",c1:"#ffd23f",c2:"#ff8a3d",stone:"#e9c98a",go:"Enter"},
+ {k:"software",name:"Software Realm",sub:"ML models, AI agents and apps I've shipped",c1:"#5fffe0",c2:"#3a7bff",stone:"#9fb3d9",go:"Enter"},
+ {k:"projects",name:"Projects World",sub:"Prototypes, hardware and side quests",c1:"#ff6ad5",c2:"#8a5cff",stone:"#c3b4e6",go:"Explore"}];
+if($("#realmRow"))$("#realmRow").innerHTML=PORTALS.map(p=>`<button class="portal" data-k="${p.k}" aria-label="${p.name}">
+  <svg viewBox="0 0 240 280" aria-hidden="true">
+   <defs><radialGradient id="pg-${p.k}"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${p.c1}"/><stop offset="1" stop-color="${p.c2}"/></radialGradient></defs>
+   <ellipse cx="120" cy="268" rx="100" ry="12" fill="#0006"/>
+   <ellipse class="glow" cx="120" cy="140" rx="110" ry="130" fill="${p.c1}" opacity=".18"/>
+   <path d="M40 262V120a80 80 0 0 1 160 0v142z" fill="url(#pg-${p.k})" stroke="${K}" stroke-width="5"/>
+   <g class="swirl"><path d="M120 70c40 0 60 40 40 70s-60 30-70 0 20-40 40-20" fill="none" stroke="#ffffffaa" stroke-width="6" stroke-linecap="round" transform="translate(-10 40)"/></g>
+   <path d="M28 266V120a92 92 0 0 1 184 0v146" fill="none" stroke="${K}" stroke-width="26"/>
+   <path d="M28 266V120a92 92 0 0 1 184 0v146" fill="none" stroke="${p.stone}" stroke-width="18"/>
+   <path d="M28 266V120a92 92 0 0 1 184 0v146" fill="none" stroke="#0003" stroke-width="18" stroke-dasharray="3 22"/>
+   <rect x="100" y="16" width="40" height="30" rx="6" fill="${p.stone}" stroke="${K}" stroke-width="4"/>
+   <text x="120" y="39" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="20" fill="${K}">${p.k==="product"?"P":p.k==="software"?"&lt;/&gt;":"★"}</text>
+   ${Array.from({length:8},(_,i)=>`<circle class="rise" style="animation-duration:${(3+Math.random()*3).toFixed(1)}s;animation-delay:-${(Math.random()*5).toFixed(1)}s" cx="${(60+Math.random()*120).toFixed(0)}" cy="260" r="${(2+Math.random()*3).toFixed(1)}" fill="#fff"/>`).join("")}
+  </svg>
+  <span class="pn">${p.name}</span><span class="ps">${p.sub}</span><span class="pgo">${p.go} ▶</span></button>`).join("");
+document.querySelectorAll(".portal").forEach(b=>b.onclick=()=>go("realm-"+b.dataset.k));
+document.querySelectorAll(".rspot").forEach(b=>b.onclick=()=>go("realm-"+b.dataset.k));
+document.querySelectorAll(".rhot[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+
+let curW=0;
+function openWorld(n){
+  if(curW!==n)lvlSel=0;curW=n;const _r=realmOf(n);if(_r!=="projects"){if(curRealm!==_r){curRealm=_r;renderTrack()}cur=REALMS[_r].worlds.indexOf(n)}const w=WORLDS[n],t=THEMES[w.kind];_s=97+n*131;[NODES,PATH_D]=layout(NLEN(n));const LAST=NLEN(n)-1;
+  screens.forEach(s=>$("#"+s).hidden=s!=="level");
+  $("#lvTitle").textContent=realmOf(n)==="projects"?w.name:`World ${dn(n)} · ${w.name}`;
+  const map=$("#map");
+  const hill=(y,amp,col,ph)=>{let d=`M0 ${VB_H}L0 ${y}`;for(let x=0;x<=1000;x+=50)d+=` L${x} ${(y-Math.abs(Math.sin(x/140+ph))*amp).toFixed(1)}`;return `<path d="${d} L1000 ${VB_H}z" fill="${col}" stroke="${K}" stroke-width="3" stroke-linejoin="round"/>`};
+  const landTop=`<path d="M0 ${VB_H}V170 Q250 140 500 165 T1000 160V${VB_H}z" fill="${t.land}" stroke="${K}" stroke-width="4"/>`;
+  map.innerHTML=`<svg viewBox="0 0 ${VB_W} ${VB_H}" role="group" aria-label="${w.name} level map">
+   <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t.sky[0]}"/><stop offset="1" stop-color="${t.sky[1]}"/></linearGradient>
+   <pattern id="tex" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="8" cy="10" r="2" fill="${t.land2}"/><circle cx="28" cy="30" r="2.5" fill="${t.land2}"/><path d="M20 12l3-5 3 5" fill="none" stroke="${t.land2}" stroke-width="2"/></pattern></defs>
+   <rect width="${VB_W}" height="${VB_H}" fill="url(#skyg)"/>
+   <g>${t.sky_items.map((k,i)=>SKY[k](i)).join("")}</g>
+   ${hill(150,40,t.far,0)}${hill(170,26,t.mid,2)}
+   ${landTop}<path d="M0 ${VB_H}V172 Q250 142 500 167 T1000 162V${VB_H}z" fill="url(#tex)"/>
+   <g id="extras"></g><g id="decor"></g>
+   <path d="${PATH_D}" fill="none" stroke="${K}" stroke-width="36" stroke-linecap="round"/>
+   <path id="lvpath" d="${PATH_D}" fill="none" stroke="${t.pathEdge}" stroke-width="29" stroke-linecap="round"/>
+   <path d="${PATH_D}" fill="none" stroke="${t.path}" stroke-width="21" stroke-linecap="round"/>
+   <path d="${PATH_D}" fill="none" stroke="${t.pathEdge}" stroke-width="4" stroke-dasharray="2 18" stroke-linecap="round" opacity=".7"/>
+   <g id="front"></g>
+   <g id="nodes"></g>
+   <g pointer-events="none">${PART[t.particles]()}</g>
+  </svg>`;
+  // sample path to keep decor off it
+  const p=map.querySelector("#lvpath"),L=p.getTotalLength(),pts=[];for(let i=0;i<=80;i++){const q=p.getPointAtLength(L*i/80);pts.push([q.x,q.y])}
+  const clear=(x,y,r)=>pts.every(([a,b])=>Math.hypot(a-x,b-y)>r)&&NODES.every(([a,b])=>Math.hypot(a-x,b-y)>r+40);
+  map.querySelector("#extras").innerHTML=t.extras.map((k,i)=>(EX[k.startsWith("pyramid")?"pyramid":k]||EX[k])(t,t.extras.slice(0,i).filter(e=>e===k).length)).join("");
+  const items=[];let tries=0;
+  while(items.length<34&&tries<900){tries++;const x=R(20,980),y=R(190,435);const s=.55+(y-190)/245*.55;
+    if(!clear(x,y,46*s+18))continue;if(items.some(o=>Math.hypot(o.x-x,o.y-y)<40*s+18))continue;
+    if(w.kind==="tech"&&x>390&&x<590&&y>360)continue;if(w.kind==="meadow"&&Math.abs(x-500)<110&&y>385)continue;
+    if((w.kind==="bubbles"||w.kind==="town")&&Math.abs(x-500)<90&&y>380)continue;
+    items.push({x,y,s,k:t.decor[Math.floor(rnd()*t.decor.length)]})}
+  items.sort((a,b)=>a.y-b.y);
+  map.querySelector("#decor").innerHTML=items.map(o=>D[o.k](o.x.toFixed(0),o.y.toFixed(0),o.s.toFixed(2),t)).join("");
+  map.querySelector("#nodes").innerHTML=NODES.map(([x,y],i)=>i===LAST
+   ?`<g class="lvnode castle" data-l="${LAST}" tabindex="0" role="button" aria-label="Boss castle: ${lvl(n,LAST).name}" transform="translate(${x} ${y+30})"><ellipse class="ring" cx="0" cy="4" rx="62" ry="13" fill="none" stroke="#fff6a8" stroke-width="5"/><g class="bob"><g transform="scale(.85)">${castle(t)}</g></g><g class="callout" transform="translate(0 -192)"><g class="bounce">${(()=>{const tx="BOSS · "+lvl(n,LAST).name,bw=Math.round(tx.length*9.6+34),ox=Math.min(0,988-(x+bw/2));return `<rect x="${ox-bw/2}" y="-22" width="${bw}" height="34" rx="17" fill="#e8402f" stroke="${K}" stroke-width="4"/><text x="${ox}" y="3" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="18" fill="#fff">${tx}</text>`})()}<path d="M-10 14h20l-10 14z" fill="#e8402f" stroke="${K}" stroke-width="4" stroke-linejoin="round"/></g></g></g>`
+   :`<g class="lvnode" data-l="${i}" tabindex="0" role="button" aria-label="Level ${i+1}: ${lvl(n,i).name}" transform="translate(${x} ${y})"><g class="bob"><ellipse cx="0" cy="22" rx="30" ry="8" fill="#0004"/><circle r="30" fill="${K}" cy="5"/><circle class="disc" r="28" fill="#ffc928" stroke="${K}" stroke-width="4"/><circle r="20" fill="none" stroke="#fff8" stroke-width="3" stroke-dasharray="40 200" transform="rotate(200)"/><text y="8" text-anchor="middle" font-family="Lilita One" font-size="26" fill="${K}">${i+1}</text></g>${(()=>{const full=lvl(n,i).overview?"Overview":(lvl(n,i).short||lvl(n,i).name),maxW=NODES.length>1?Math.max(110,(NODES[Math.min(2,NODES.length-1)][0]-NODES[0][0])-14):300,lim=Math.floor((maxW-28)/8.6),tx=full.length>lim?full.slice(0,lim-1).trimEnd()+"…":full,bw=Math.round(tx.length*8.6+28);return `<g class="lvtag" transform="translate(0 -64)"><rect x="${-bw/2}" y="-17" width="${bw}" height="30" rx="15" fill="#fff" stroke="${K}" stroke-width="3.5"/><path d="M-8 12h16l-8 11z" fill="#fff" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/><path d="M-6.5 11h13" stroke="#fff" stroke-width="4"/><text x="0" y="4" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="16" fill="${K}">${tx}</text></g>`})()}</g>`).join("");
+  map.querySelectorAll(".lvnode").forEach(g=>{g.onclick=()=>openLevel(+g.dataset.l);g.onmouseenter=()=>selectNode(+g.dataset.l);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();e.stopPropagation();openLevel(+g.dataset.l)}}});
+  selectNode(lvlSel||0);
+}
+
+function selectNode(i){lvlSel=i;document.querySelectorAll("#map .lvnode").forEach((b,j)=>b.classList.toggle("sel",j===i))}
+function openLevel(i){go(`world-${curW+1}-${i+1}`)}
+let stL=0;
+function openStage(n,l){
+  if(curW!==n||$("#map").innerHTML===""){openWorld(n)}
+  curW=n;stL=l;lvlSel=l;const w=WORLDS[n],t=THEMES[w.kind];
+  screens.forEach(s=>$("#"+s).hidden=s!=="stage");
+  const st=$("#stage");st.style.setProperty("--sky0",t.sky[0]);st.style.setProperty("--sky1",t.sky[1]);st.style.setProperty("--land",t.land);
+  const isCastle=l===NLEN(n)-1;
+  const wl=realmOf(n)==="projects"?"Projects World":`World ${dn(n)}`;
+  $("#stTitle").textContent=isCastle?`${wl} · Boss Castle`:l===0?`${wl} · Overview`:`${wl} · Level ${l+1}`;
+  const C0=CONTENT[n],L0=C0.levels[l];
+  $("#stArt").innerHTML=L0.icon?`<a class="appicon bob2" href="${(L0.links&&L0.links[0][1])||"https://apps.apple.com/us/app/lockd/id6756148130"}" target="_blank" rel="noopener"><img src="${L0.icon}" alt="${w.name} logo"><span>${L0.iconLabel||w.name+" · App Store"} ↗</span></a>`
+   :L0.sites?`<div class="sites">${L0.sites.map(([nm,u,tg,c,bg,im])=>`<a class="site" href="${u}" target="_blank" rel="noopener"><div class="sbar"><i></i><i></i><i></i><span>${u.replace("https://","")}</span></div>${im?`<img class="sshot" src="${im}" alt="${nm} homepage">`:""}<div class="sbody" style="background:${bg}"${im?" hidden":""}><div class="snav" style="background:${c}"></div><b style="color:${c}">${nm}</b><small>${tg}</small><div class="sblocks"><span style="background:${c}33"></span><span style="background:${c}22"></span><span style="background:${c}33"></span></div></div><div class="svisit">${nm} · Visit site ↗</div></a>`).join("")}</div>`
+   :L0.video?`<div class="stage-media"><video src="${L0.video}" poster="${L0.poster||""}" controls playsinline preload="metadata" aria-label="${L0.name} demo video"></video></div>`
+   :L0.img?`<button class="stage-media zoomable" data-src="${L0.img}" aria-label="Enlarge image"><img src="${L0.img}" alt="${L0.imgAlt||L0.name}"><span class="zhint">🔍 Click to enlarge</span></button>`
+   :isCastle?`<svg viewBox="-110 -215 220 230" aria-hidden="true"><g class="bob2">${castle(t)}</g></svg>`:`<div class="bob2">${island(w,n)}</div>`;
+  const C=CONTENT[n],L=C.levels[l];
+  if(L.overview){$("#stCard").innerHTML=`<div class="eyebrow">${w.name} · Level 1 · World overview</div>
+   <h3>${w.name}</h3><div class="when">${L.role}</div>
+   <p class="ovsum">${L.summary}</p>
+   <div class="ovh"><b>Key results</b><ul>${L.highlights.map(h=>`<li>${h}</li>`).join("")}</ul></div>
+   <div class="row"><b>Deliverables</b><span class="pw">${L.built.map(p=>`<i>${p}</i>`).join("")}</span>
+   <b>Tools</b><span class="pw">${L.power.split(" · ").map(p=>`<i>${p}</i>`).join("")}</span></div>
+   <div class="lk">${(L.links||[]).map(([t,u])=>`<a class="chip" href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join("")}<button class="chip" id="ovNext">Start Level 2 ▶</button></div>`;
+   $("#ovNext").onclick=()=>openLevel(1);
+  }else
+  $("#stCard").innerHTML=`<div class="eyebrow">${w.name} · ${isCastle?"Boss level":"Level "+(l+1)}</div>
+   <h3>${L.name}</h3>
+   <div class="when">${L.when||C.when}</div>
+   <div class="row"><b>Objective</b><span>${L.mission}</span>
+   <b>Approach</b><span>${L.did}</span>
+   <b>Impact</b><span class="res">${L.result}</span>
+   <b>Tools</b><span class="pw">${L.power.split(" · ").map(p=>`<i>${p}</i>`).join("")}</span></div>
+   ${L.note?`<p class="cnote">🔒 ${L.note}</p>`:""}
+   ${(L.links||(C.link&&isCastle?[["View the code on GitHub",C.link]]:[])).length?`<div class="lk">${(L.links||[["View the code on GitHub",C.link]]).map(([t,u])=>u.startsWith("#")?`<a class="chip" href="${u}">${t} ▶</a>`:`<a class="chip" href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join("")}</div>`:""}`;
+  $("#stCount").textContent=`${l+1} / ${NLEN(n)}`;$("#stPrev").disabled=l===0;$("#stNext").disabled=l===NLEN(n)-1;
+}
+$("#stMap").onclick=()=>go("world-"+(curW+1));
+document.addEventListener("click",e=>{const z=e.target.closest(".zoomable");if(!z)return;$("#rmTitle").textContent=CONTENT[curW].levels[stL].name;$("#rmImg").src=z.dataset.src;$("#rmImg").alt=$("#rmTitle").textContent;$("#rmDl").hidden=true;$("#rmodal").hidden=false;$("#rmClose").focus()});
+$("#stPrev").onclick=()=>stL>0&&openLevel(stL-1);
+$("#stNext").onclick=()=>stL<NLEN(curW)-1&&openLevel(stL+1);
+route();
+</script>
+
+</body>
+</html>
